@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../modules/eslint-plugin/src/index.ts"],"names":[],"mappings":";AAAA,qCAAoC;AACpC,iCAAgC;AAEhC,iBAAS;IACP,KAAK,eAAA;IACL,OAAO,mBAAA;CACR,CAAC","sourcesContent":["import { configs } from './configs';\nimport { rules } from './rules';\n\nexport = {\n  rules,\n  configs,\n};\n"]}

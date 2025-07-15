@@ -1,0 +1,186 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [menuItem]="'Parameter Management'"
+    [headerTitle]="'Parameter File Import'"></app-breadcrumbs>
+</div>
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">Parameter File Import</h1>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-tab-group
+    mat-stretch-tabs="false"
+    mat-align-tabs="start"
+    (selectedTabChange)="onTabChange()"
+    [(selectedIndex)]="tabIdx">
+    @for (item of tabList; track item.key) {
+      <mat-tab [label]="item.label">
+        <ng-template mat-tab-label>
+          <div>{{ item?.label }}</div>
+        </ng-template>
+      </mat-tab>
+    }
+  </mat-tab-group>
+  <mat-card-content>
+    @if (tabIdx === 0) {
+      <div class="entry-wrapper">
+        <div class="filter-wrapper">
+          <div><strong>Depot Name</strong></div>
+          <mat-form-field style="width: 360px">
+            <mat-select placeholder="Select Depot" [(ngModel)]="depotSelected">
+              <mat-option *ngFor="let depot of depots" [value]="depot.depot_id">
+                {{ depot.depot_name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="entry-actions">
+          <!-- <div class="import-wrapper">
+            <button
+              type="button"
+              mat-flat-button
+              (click)="openView()"
+              class="import-button"
+              [disabled]="!depotSelected">
+              <mat-icon>
+                <img src="/assets/icons/import.png" alt="image"
+              /></mat-icon>
+              Import
+            </button>
+          </div> -->
+          <div class="import-wrapper">
+            <button class="import-button" mat-flat-button>
+              <mat-icon>
+                <img src="/assets/icons/import.png" alt="image"
+              /></mat-icon>
+              Import
+            </button>
+            <input #fileInput type="file" id="fileUpload" class="input-file" />
+          </div>
+
+          <!-- <app-filter [filterConfigs]="filterConfigs"></app-filter> -->
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Selected Filter Component -->
+      <!-- <app-selected-filter /> -->
+
+      <div
+        class="table-wrapper"
+        [style.border-bottom-width]="depotSelected ? '1px' : 0">
+        <ng-container *ngIf="!depotSelected">
+          <div
+            class="flex-center-center"
+            style="height: 300px; flex-direction: column; gap: 12px">
+            <img src="/assets/icons/camera.svg" alt="" />
+            <p style="font-size: 24px; color: #000">
+              Complete selection to import.
+            </p>
+          </div>
+        </ng-container>
+      </div>
+    } @else {
+      <table mat-table class="stripped" [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="view">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox
+              onkeypress=""
+              id="chkAll"
+              color="primary"></mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-checkbox onkeypress="" color="primary"></mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
+          <td mat-cell *matCellDef="let element; let dataIndex = index">
+            {{ dataIndex + 1 }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="depot_id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Depots</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.depot }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fileId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Zip File ID</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.fileId }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="parameterName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Zip File Name
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.parameterName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Import Status
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span
+              [ngClass]="{
+                'status-green': element.status === 'Imported',
+                'status-red': element.status === 'Fail'
+              }">
+              {{ element.status }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="version">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Version</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.version }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="last_update">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Update</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.last_update | date: 'dd/mm/yyy HH:mm' }}
+          </td>
+        </ng-container>
+
+        <tr
+          style="
+            background-color: #4a5964;
+            font-weight: 600;
+            color: white;
+            height: 40px;
+          "
+          mat-header-row
+          *matHeaderRowDef="displayedColumns"></tr>
+
+        <tr
+          style="height: 40px"
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            No Records Found
+          </td>
+        </tr>
+      </table>
+
+      <app-pagination
+        [totalItems]="rowCount"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    }
+  </mat-card-content>
+</mat-card>

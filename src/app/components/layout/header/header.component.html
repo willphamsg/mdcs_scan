@@ -1,0 +1,484 @@
+<mat-toolbar>
+  @if (!dagw) {
+    <div class="header-container">
+      <div class="item">
+        <a
+          style="text-decoration: none"
+          [routerLink]="[routesUrl?.dashboard?.home]"
+          class="logo">
+          <span>MDCS</span>
+        </a>
+      </div>
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="monitoringMenu"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'monitoring' }"
+          (menuOpened)="menuHandler('open', 'monitoring')"
+          (menuClosed)="menuHandler('close', 'monitoring')">
+          Monitoring
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['monitoring'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #monitoringMenu="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.monitoring?.busOperation]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('monitoring')">
+            Bus Operation Status
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.monitoring?.cardKeyVersion]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('monitoring')">
+            Card Key Versions
+          </button>
+        </mat-menu>
+      </div>
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="busMenu"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'bus' }"
+          (menuOpened)="menuHandler('open', 'bus')"
+          (menuClosed)="menuHandler('close', 'bus')">
+          Bus Management
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['bus'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #busMenu="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.bus?.busExpList]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('bus')">
+            Bus Exception List
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.bus?.busList]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('bus')">
+            Daily Bus List
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.bus?.vehicleList]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('bus')">
+            Vehicle Map
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.bus?.busTransfer]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('bus')">
+            Bus Transfer
+          </button>
+        </mat-menu>
+      </div>
+
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="paramManagement"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'paramManagement' }"
+          (menuOpened)="menuHandler('open', 'paramManagement')"
+          (menuClosed)="menuHandler('close', 'paramManagement')">
+          Parameter Management
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['paramManagement'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #paramManagement="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.dagwParameter]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramManagement')">
+            DAGW Parameter Summary
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.parameterViewer]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramManagement')">
+            Parameter Viewer
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.importParameter]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramManagement')">
+            Parameter File Import
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.exportParameter]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramManagement')">
+            Parameter File Export
+          </button>
+        </mat-menu>
+      </div>
+
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="paramTrial"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'paramTrial' }"
+          (menuOpened)="menuHandler('open', 'paramTrial')"
+          (menuClosed)="menuHandler('close', 'paramTrial')">
+          Parameter Trial
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['paramTrial'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #paramTrial="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="['/dacs/parameter-trial/trial-device-selection']"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramTrial')">
+            Trial Device Selection
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="['/dacs/parameter-trial/parameter-version-summary']"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramTrial')">
+            Parameter Version Summary
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="['/dacs/parameter-trial/approval']"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramTrial')">
+            New Parameter Approval
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="['/dacs/parameter-trial/parameter-mode']"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramTrial')">
+            Parameter Mode
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="['/dacs/parameter-trial/end-trial']"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramTrial')">
+            End Trial
+          </button>
+        </mat-menu>
+      </div>
+
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="report"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'report' }"
+          (menuOpened)="menuHandler('open', 'report')"
+          (menuClosed)="menuHandler('close', 'report')">
+          Report
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['report'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #report="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.report?.dailyReport]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('report')">
+            Daily report
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.report?.adhoc]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('report')">
+            Ad-Hoc report
+          </button>
+        </mat-menu>
+      </div>
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="maintenance"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'maintenance' }"
+          (menuOpened)="menuHandler('open', 'maintenance')"
+          (menuClosed)="menuHandler('close', 'maintenance')">
+          Maintenance
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['maintenance'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #maintenance="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.maintenance?.diagnostics]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('maintenance')">
+            Diagnostics
+          </button>
+
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.maintenance?.eodProcess]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('maintenance')">
+            EOD Process
+          </button>
+
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.maintenance?.auditLog]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('maintenance')">
+            Audit Log
+          </button>
+
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.maintenance?.systemInformation]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('maintenance')">
+            System Information
+          </button>
+        </mat-menu>
+      </div>
+      <!-- <div class="item">
+        <mat-form-field>
+          <mat-select
+            placeholder="Select Bus Depot"
+            [(ngModel)]="depotId"
+            (ngModelChange)="busSelect($event)">
+            <mat-option *ngFor="let option of options" [value]="option">{{
+              option.depot_name
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div> -->
+      <div class="item">
+        <app-notification></app-notification>
+
+        <button
+          mat-icon-button
+          class="icon"
+          [matMenuTriggerFor]="profile"
+          aria-label="Profile">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #profile="matMenu" yPosition="below">
+          <button mat-menu-item>Change Password</button>
+          <button mat-menu-item type="button" (click)="logOut()">
+            Log Out
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  }
+
+  @if (dagw) {
+    <div class="header-container dagw">
+      <div class="item">
+        <a
+          style="text-decoration: none"
+          [routerLink]="['/dagw/dashboard']"
+          class="logo">
+          <span>DAGW</span>
+        </a>
+      </div>
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="monitoringMenu"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'monitoring' }"
+          (menuOpened)="menuHandler('open', 'monitoring')"
+          (menuClosed)="menuHandler('close', 'monitoring')">
+          Monitoring
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['monitoring'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #monitoringMenu="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="['/dagw/bus-monitoring']"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('monitoring')">
+            Bus Operation Status
+          </button>
+        </mat-menu>
+      </div>
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="busMenu"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'bus' }"
+          (menuOpened)="menuHandler('open', 'bus')"
+          (menuClosed)="menuHandler('close', 'bus')">
+          Bus Management
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['bus'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #busMenu="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.bus?.vehicleList]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('bus')">
+            Vehicle Map
+          </button>
+        </mat-menu>
+      </div>
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="paramManagement"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'paramManagement' }"
+          (menuOpened)="menuHandler('open', 'paramManagement')"
+          (menuClosed)="menuHandler('close', 'paramManagement')">
+          Parameter Management
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['paramManagement'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #paramManagement="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.importParameter]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramManagement')">
+            Parameter File Import
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.exportParameter]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramManagement')">
+            Parameter File Export
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.messageFileImport]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramManagement')">
+            Message File Import
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.messageFileExport]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramManagement')">
+            Message File Export
+          </button>
+        </mat-menu>
+      </div>
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="report"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'report' }"
+          (menuOpened)="menuHandler('open', 'report')"
+          (menuClosed)="menuHandler('close', 'report')">
+          Report
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['report'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #report="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="['/dagw/report/daily-report']"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('report')">
+            Daily report
+          </button>
+        </mat-menu>
+      </div>
+      <div class="item">
+        <button mat-icon-button class="icon" aria-label="Notification">
+          <mat-icon>notifications</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          class="icon"
+          [matMenuTriggerFor]="profile"
+          aria-label="Profile">
+          <mat-icon matBadge="15" matBadgeColor="warn">account_circle</mat-icon>
+        </button>
+        <mat-menu #profile="matMenu" yPosition="below">
+          <button mat-menu-item>Change Password</button>
+          <button mat-menu-item type="button" (click)="logOut()">
+            Log Out
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  }
+</mat-toolbar>

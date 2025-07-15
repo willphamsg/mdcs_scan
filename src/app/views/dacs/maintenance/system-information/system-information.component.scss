@@ -1,0 +1,123 @@
+@mixin label-value-styles(
+  $font-size,
+  $font-weight,
+  $line-height,
+  $color: null
+) {
+  font-size: $font-size;
+  font-weight: $font-weight;
+  line-height: $line-height;
+  @if $color {
+    color: $color;
+  }
+}
+
+@mixin info-row-styles(
+  $display,
+  $grid-template-column,
+  $align-items,
+  $gap,
+  $padding-left,
+  $background-color,
+  $font-weight,
+  $color,
+  $height
+) {
+  display: $display;
+  grid-template-columns: $grid-template-column;
+  align-items: $align-items;
+  gap: $gap;
+  padding-left: $padding-left;
+  background-color: $background-color;
+  color: $color;
+  font-weight: $font-weight;
+  height: $height;
+}
+
+@mixin items($display, $grid-template-column, $align-items, $gap) {
+  display: $display;
+  grid-template-columns: $grid-template-column;
+  align-items: $align-items;
+  gap: $gap;
+}
+
+.information-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.info-section {
+  padding: 16px;
+  box-shadow: none !important;
+}
+
+.info-row-mdcs {
+  @include info-row-styles(
+    grid,
+    1fr 1fr,
+    center,
+    30px,
+    15px,
+    #4a5964,
+    600,
+    white,
+    40px
+  );
+}
+
+.info-row-dagw {
+  @include info-row-styles(
+    grid,
+    1fr 0.4fr 0.5fr,
+    center,
+    30px,
+    15px,
+    #4a5964,
+    600,
+    white,
+    40px
+  );
+}
+
+.info-label,
+.info-value {
+  padding: 8px;
+  @include label-value-styles(14px, 600, 16px);
+}
+
+.items {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 0 20px 50px !important;
+
+  &__label {
+    @include label-value-styles(14px, 400, 16px);
+  }
+
+  &__value {
+    @include label-value-styles(14px, 400, 16px, #009e73);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+}
+
+mat-expansion-panel {
+  box-shadow: none !important;
+  border-radius: 4px !important;
+  border: 1px solid #828282;
+
+  mat-panel-title {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+
+mat-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 16px;
+}

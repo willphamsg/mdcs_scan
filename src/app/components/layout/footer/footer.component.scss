@@ -1,0 +1,58 @@
+@mixin footer-typo {
+  padding: 5px;
+  width: 100%;
+  color: white;
+  font-weight: bolder;
+  text-align: center;
+}
+
+footer {
+  position: fixed;
+  bottom: 0px;
+  background-color: black;
+  width: 100%;
+  height: 32px;
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    list-style: none;
+
+    .footer-items {
+      display: flex;
+      gap: 30px;
+
+      .item {
+        @include footer-typo;
+
+        width: 200px;
+
+        .value {
+          font-weight: lighter;
+          margin-left: 5px;
+        }
+      }
+    }
+
+    .event {
+      @include footer-typo;
+
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      gap: 6px;
+      margin-left: auto;
+      align-items: center;
+      position: absolute;
+      right: 30px;
+      background-color: #0072b2;
+      width: 147px !important;
+      cursor: pointer;
+    }
+  }
+}

@@ -1,0 +1,75 @@
+@if (depot) {
+  <div class="information-grid">
+    <mat-card class="info-section">
+      <mat-card-header>
+        <mat-card-title>MDCS Information</mat-card-title>
+        <!-- Update Last Update when logic is finalized -->
+        <mat-card-subtitle>Last updated 2024-02-09 14:00:36</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-accordion multi>
+        <div class="info-row-mdcs">
+          <div class="info-label">System Information Name</div>
+          <div class="info-value">MDCS</div>
+        </div>
+
+        @for (info of mdcsInformation$ | async; track $index) {
+          <mat-expansion-panel togglePosition="before">
+            <mat-expansion-panel-header collapsedHeight="44px">
+              <mat-panel-title>{{ info.sectionName }}</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            @for (details of info.details; track $index) {
+              <div class="items">
+                <div class="items__label">
+                  {{ details.label }}
+                </div>
+                <div class="items__value">
+                  {{ details.value }}
+                </div>
+              </div>
+            }
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    </mat-card>
+
+    <mat-card class="info-section">
+      <mat-card-header>
+        <mat-card-title>DAGW Information</mat-card-title>
+        <mat-card-subtitle>Last updated 2024-02-09 14:00:36</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-accordion multi>
+        <div class="info-row-dagw">
+          <div class="info-label">System Information Name</div>
+          <div class="info-value">DAGW1</div>
+          <div class="info-value">DAGW1</div>
+        </div>
+
+        @for (info of dagwInformation$ | async; track $index) {
+          <mat-expansion-panel togglePosition="before">
+            <mat-expansion-panel-header collapsedHeight="44px">
+              <mat-panel-title>{{ info.sectionName }}</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            @for (details of info.details; track $index) {
+              <div class="items">
+                <div class="items__label">
+                  {{ details.label }}
+                </div>
+                <div class="items__value">
+                  @for (value of details.value; track $index) {
+                    <span class="value-item">
+                      {{ value }}
+                    </span>
+                  }
+                </div>
+              </div>
+            }
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    </mat-card>
+  </div>
+}

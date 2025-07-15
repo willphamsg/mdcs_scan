@@ -1,0 +1,441 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [menuItem]="'Monitoring'"
+    [headerTitle]="'View Card Key Versions'"></app-breadcrumbs>
+</div>
+
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">View Card Key Versions</h1>
+  </mat-card-header>
+  <mat-divider> </mat-divider>
+  <mat-card-content>
+    <div class="filter-wrapper">
+      <mat-form-field style="width: 360px">
+        <mat-select
+          [(ngModel)]="depotSelected"
+          (ngModelChange)="searchDepot()"
+          placeholder="Select Depot">
+          <mat-option *ngFor="let depot of depots" [value]="depot.depot_id">
+            {{ depot.depot_name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <ng-container *ngIf="depotSelected">
+        <mat-form-field style="width: 300px; margin-left: 20px">
+          <input
+            matInput
+            placeholder="Bus ID"
+            type="search"
+            (change)="searchText($event)" />
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field>
+
+        <mat-checkbox
+          [(ngModel)]="chkInconsistent"
+          style="margin-left: 20px"
+          color="primary"
+          (ngModelChange)="searchStatus()">
+          Inconsistent Card Key Versions
+        </mat-checkbox>
+      </ng-container>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div
+      class="table-wrapper"
+      [style.border-bottom-width]="depotSelected ? '1px' : 0">
+      <ng-container *ngIf="!depotSelected; else table">
+        <div
+          class="flex-center-center"
+          style="height: 300px; flex-direction: column; gap: 12px">
+          <img src="/assets/icons/camera.svg" alt="" />
+          <p style="font-size: 24px; color: #000">
+            Select a depot to show results.
+          </p>
+          <p style="font-size: 16px; color: #828282">No data to display.</p>
+        </div>
+      </ng-container>
+      <ng-template #table>
+        <div class="card-key-table">
+          <table>
+            <tr>
+              <th>DAGW Card Key Versions</th>
+              <td *ngFor="let ver of dagwSource">
+                {{ ver }}
+              </td>
+            </tr>
+          </table>
+        </div>
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          matSort
+          (matSortChange)="sortHandler($event)">
+          <!-- Check Column -->
+
+          <!-- No. Column -->
+          <ng-container matColumnDef="id">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              [hidden]="!hiddenHandler('id')">
+              No.
+            </th>
+            <td
+              [hidden]="!hiddenHandler('id')"
+              mat-cell
+              *matCellDef="let element; let dataIndex = index">
+              {{ dataIndex + 1 }}
+            </td>
+          </ng-container>
+
+          <!-- Bus ID Column -->
+          <ng-container matColumnDef="bus_num">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              [hidden]="!hiddenHandler('bus_num')">
+              Bus ID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              [hidden]="!hiddenHandler('bus_num')"
+              [ngClass]="[
+                chkInconsistent ? 'chk-inconsistent' : '',
+                element.status ?? ''
+              ]">
+              {{ element.bus_num }}
+            </td>
+          </ng-container>
+
+          <!-- Report Time -->
+          <ng-container matColumnDef="report_time">
+            <th
+              [hidden]="!hiddenHandler('report_time')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              <div class="flex-box">
+                <p>Time of</p>
+                <p>Reporting</p>
+              </div>
+            </th>
+            <td
+              [hidden]="!hiddenHandler('report_time')"
+              mat-cell
+              *matCellDef="let element"
+              [ngClass]="[
+                chkInconsistent ? 'chk-inconsistent' : '',
+                element.status ?? ''
+              ]">
+              <div class="flex-box">
+                <p>
+                  {{ element.report_time | date: 'dd/MM/yyyy' }}
+                </p>
+                <p>{{ element.report_time | date: 'HH:mm:ss' }}</p>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- BCV1 -->
+          <ng-container matColumnDef="bcv1">
+            <th
+              [hidden]="!hiddenHandler('bcv1')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              BCV1
+            </th>
+            <td
+              [hidden]="!hiddenHandler('bcv1')"
+              mat-cell
+              *matCellDef="let element"
+              [ngClass]="[
+                chkInconsistent ? 'chk-inconsistent' : '',
+                element.status ?? ''
+              ]">
+              {{ element.bcv1 }}
+            </td>
+          </ng-container>
+
+          <!-- BCV1 Ver-->
+          <ng-container matColumnDef="ver1">
+            <th
+              [hidden]="!hiddenHandler('ver1')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              Ver
+            </th>
+            <td
+              [hidden]="!hiddenHandler('ver1')"
+              mat-cell
+              *matCellDef="let element"
+              [ngClass]="[
+                element.ver1.status === '1'
+                  ? 'chk-inconsistent inconsistent'
+                  : element.ver1.status === '2'
+                    ? 'chk-inconsistent failed'
+                    : ''
+              ]">
+              {{ element.ver1.value }}
+            </td>
+          </ng-container>
+
+          <!-- BCV2 -->
+          <ng-container matColumnDef="bcv2">
+            <th
+              [hidden]="!hiddenHandler('bcv2')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              BCV2
+            </th>
+            <td
+              [hidden]="!hiddenHandler('bcv2')"
+              mat-cell
+              *matCellDef="let element"
+              [ngClass]="[
+                chkInconsistent ? 'chk-inconsistent' : '',
+                element.status ?? ''
+              ]">
+              {{ element.bcv2 }}
+            </td>
+          </ng-container>
+
+          <!-- BCV2 Ver-->
+          <ng-container matColumnDef="ver2">
+            <th
+              [hidden]="!hiddenHandler('ver2')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              Ver
+            </th>
+            <td
+              [hidden]="!hiddenHandler('ver2')"
+              mat-cell
+              *matCellDef="let element"
+              [ngClass]="[
+                element.ver2.status === '1'
+                  ? 'chk-inconsistent inconsistent'
+                  : element.ver2.status === '2'
+                    ? 'chk-inconsistent failed'
+                    : ''
+              ]">
+              {{ element.ver2.value }}
+            </td>
+          </ng-container>
+
+          <!-- BCV2 -->
+          <ng-container matColumnDef="bcv3">
+            <th
+              [hidden]="!hiddenHandler('bcv3')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              BCV3
+            </th>
+            <td
+              [hidden]="!hiddenHandler('bcv3')"
+              mat-cell
+              *matCellDef="let element"
+              [ngClass]="[
+                chkInconsistent ? 'chk-inconsistent' : '',
+                element.status ?? ''
+              ]">
+              {{ element.bcv3 }}
+            </td>
+          </ng-container>
+
+          <!-- BCV3 Ver-->
+          <ng-container matColumnDef="ver3">
+            <th
+              [hidden]="!hiddenHandler('ver3')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              Ver
+            </th>
+            <td
+              [hidden]="!hiddenHandler('ver3')"
+              mat-cell
+              *matCellDef="let element"
+              [ngClass]="[
+                element.ver3.status === '1'
+                  ? 'chk-inconsistent inconsistent'
+                  : element.ver3.status === '2'
+                    ? 'chk-inconsistent failed'
+                    : ''
+              ]">
+              {{ element.ver3.value }}
+            </td>
+          </ng-container>
+
+          <!-- BCV4 -->
+          <ng-container matColumnDef="bcv4">
+            <th
+              [hidden]="!hiddenHandler('bcv4')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              BCV4
+            </th>
+            <td
+              [hidden]="!hiddenHandler('bcv4')"
+              mat-cell
+              *matCellDef="let element"
+              [ngClass]="[
+                chkInconsistent ? 'chk-inconsistent' : '',
+                element.status ?? ''
+              ]">
+              {{ element.bcv4 }}
+            </td>
+          </ng-container>
+
+          <!-- BCV4 Ver-->
+          <ng-container matColumnDef="ver4">
+            <th
+              [hidden]="!hiddenHandler('ver4')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              Ver
+            </th>
+            <td
+              [hidden]="!hiddenHandler('ver4')"
+              mat-cell
+              *matCellDef="let element"
+              [ngClass]="[
+                element.ver4.status === '1'
+                  ? 'chk-inconsistent inconsistent'
+                  : element.ver4.status === '2'
+                    ? 'chk-inconsistent failed'
+                    : ''
+              ]">
+              {{ element.ver4.value }}
+            </td>
+          </ng-container>
+
+          <!-- BCV5 -->
+          <ng-container matColumnDef="bcv5">
+            <th
+              [hidden]="!hiddenHandler('bcv5')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              BCV5
+            </th>
+            <td
+              [hidden]="!hiddenHandler('bcv5')"
+              mat-cell
+              *matCellDef="let element">
+              {{ element.bcv5 }}
+            </td>
+          </ng-container>
+
+          <!-- BCV5 Ver-->
+          <ng-container matColumnDef="ver5">
+            <th
+              [hidden]="!hiddenHandler('ver5')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              Ver
+            </th>
+            <td
+              [hidden]="!hiddenHandler('ver5')"
+              mat-cell
+              *matCellDef="let element"
+              [ngClass]="[
+                element.ver5.status === '1'
+                  ? 'chk-inconsistent inconsistent'
+                  : element.ver5.status === '2'
+                    ? 'chk-inconsistent failed'
+                    : ''
+              ]">
+              {{ element.ver5.value }}
+            </td>
+          </ng-container>
+
+          <!-- BCV6 -->
+          <ng-container matColumnDef="bcv6">
+            <th
+              [hidden]="!hiddenHandler('bcv6')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              BCV6
+            </th>
+            <td
+              [hidden]="!hiddenHandler('bcv6')"
+              mat-cell
+              *matCellDef="let element">
+              {{ element.bcv6 }}
+            </td>
+          </ng-container>
+
+          <!-- BCV6 Ver-->
+          <ng-container matColumnDef="ver6">
+            <th
+              [hidden]="!hiddenHandler('ver6')"
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header>
+              Ver
+            </th>
+            <td
+              [hidden]="!hiddenHandler('ver6')"
+              mat-cell
+              *matCellDef="let element"
+              [ngClass]="[
+                element.ver6.status === '1'
+                  ? 'chk-inconsistent inconsistent'
+                  : element.ver6.status === '2'
+                    ? 'chk-inconsistent failed'
+                    : ''
+              ]">
+              {{ element.ver6.value }}
+            </td>
+          </ng-container>
+
+          <tr
+            style="background-color: #4a5964; font-weight: 600; color: white"
+            mat-header-row
+            *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td
+              class="mat-cell no-data"
+              [attr.colspan]="displayedColumns.length">
+              No Records Found
+            </td>
+          </tr>
+        </table>
+
+        <div class="legend">
+          <div class="flex-center-center">
+            <div class="box box-yellow"></div>
+            <span>Inconsistent</span>
+          </div>
+          <div class="flex-center-center">
+            <div class="box box-orange"></div>
+            <span>Authentication Failure</span>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+    <div *ngIf="depotSelected" class="flex-center-center">
+      <app-pagination
+        [totalItems]="rowCount"
+        (pageChange)="onPageChange($event)"></app-pagination>
+    </div>
+  </mat-card-content>
+</mat-card>

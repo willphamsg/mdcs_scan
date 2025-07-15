@@ -1,0 +1,30 @@
+ul.breadcrumb {
+  padding: 10px 16px;
+  list-style: none;
+  background-color: transparent;
+}
+ul.breadcrumb li {
+  display: inline;
+  font-size: 18px;
+  color: white;
+  font-weight: 400;
+  font-size: 12px;
+}
+ul.breadcrumb li + li:before {
+  padding: 8px;
+  content: ">\00a0";
+}
+ul.breadcrumb li a {
+  color: white;
+  text-decoration: none;
+}
+
+ul.breadcrumb li span {
+  text-decoration: none;
+  font-weight: bolder;
+}
+
+h1 {
+  padding: 0 16px;
+  color: white;
+}

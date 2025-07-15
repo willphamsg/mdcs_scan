@@ -1,0 +1,50 @@
+[
+  {
+    "chk": true,
+    "field": "id",
+    "name": "Id",
+    "hidden": false
+  },
+  {
+    "chk": true,
+    "field": "depot_id",
+    "name": "Depo Id",
+    "hidden": false
+  },
+  {
+    "chk": true,
+    "field": "fileId",
+    "name": "File ID",
+    "hidden": false
+  },
+  {
+    "chk": false,
+    "field": "parameterName",
+    "name": "Parameter Name",
+    "hidden": true
+  },
+  {
+    "chk": true,
+    "field": "version",
+    "name": "Version",
+    "hidden": false
+  },
+  {
+    "chk": true,
+    "field": "type",
+    "name": "Type",
+    "hidden": false
+  },
+  {
+    "chk": true,
+    "field": "status",
+    "name": "Status",
+    "hidden": false
+  },
+  {
+    "chk": true,
+    "field": "chk",
+    "name": "Check",
+    "hidden": true
+  }
+]

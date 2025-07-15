@@ -1,0 +1,21 @@
+.label {
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.status {
+  font-weight: 600;
+  &.success {
+    color: #009e73;
+  }
+
+  &.failed {
+    color: #9f0f0f;
+  }
+
+  .mat-icon {
+    font-size: 30px !important;
+    height: auto !important;
+    width: auto !important;
+  }
+}

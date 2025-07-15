@@ -1,0 +1,122 @@
+@media (max-width: 620px) {
+  .container {
+    grid-template-columns: repeat(9, minmax(min-content, 100px));
+    justify-content: center;
+  }
+}
+
+.logo {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  span {
+    font-size: 32px;
+    font-weight: 900;
+    color: #000000;
+    margin-left: 50px;
+  }
+}
+
+.header-container {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(min-content, 300px));
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+
+  &.dagw {
+    grid-template-columns: repeat(6, minmax(min-content, 300px));
+  }
+
+  .item {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+
+    .parent-menu {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 500;
+      text-decoration: none;
+      color: #000000;
+      cursor: pointer;
+      flex-direction: row-reverse;
+      transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        font-weight 0.3s ease;
+
+      &.active {
+        background-color: #e6f1f7;
+        color: #0046ad;
+        font-weight: 600;
+      }
+    }
+
+    .menu {
+      width: 100%;
+      font-size: 16px;
+      font-weight: 500;
+      text-decoration: none;
+      color: #000000;
+      transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        font-weight 0.3s ease;
+
+      &:hover,
+      &.active {
+        background-color: #e6f1f7;
+        color: #0046ad;
+        font-weight: 500;
+      }
+    }
+
+    .mdc-line-ripple {
+      display: none;
+    }
+    // .mat-mdc-text-field-wrapper.mdc-text-field--outlined
+    //   .mat-mdc-form-field-infix {
+    //   background-color: #0046ad;
+    // }
+
+    .mat-mdc-form-field-flex {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__trailing {
+        border-width: 0 !important;
+      }
+    }
+
+    // /*you also have to adjust the label, after the above*/
+    // .mat-mdc-form-field:not(.mat-form-field-disabled)
+    //   .mat-mdc-floating-label.mdc-floating-label {
+    //   top: 50%;
+    // }
+    // .mdc-floating-label--float-above {
+    //   top: 50% !important;
+    // }
+
+    .mat-mdc-select-value-text {
+      font-size: 16px;
+      font-weight: 400;
+    }
+  }
+}
+
+.menu-button {
+  transition: 300ms ease-in-out;
+  transform: rotate(0deg);
+}
+
+.notif-menu {
+  .mat-mdc-menu-content {
+    width: 348px;
+  }
+}

@@ -1,0 +1,51 @@
+.card-key-table {
+  margin: 20px 24px;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    th,
+    td {
+      border: 1px solid #000;
+      padding: 12px;
+    }
+    td {
+      width: 8%;
+    }
+  }
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+  justify-content: center;
+  gap: 30px;
+
+  .box {
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+
+    &-yellow {
+      background-color: #ffb000;
+    }
+
+    &-orange {
+      background-color: #fe6100;
+    }
+  }
+}
+
+.chk-inconsistent {
+  &.inconsistent {
+    background-color: #ffb000;
+  }
+  &.failed {
+    background-color: #fe6100;
+  }
+}
+
+.filter-wrapper {
+  margin-bottom: 24px;
+}

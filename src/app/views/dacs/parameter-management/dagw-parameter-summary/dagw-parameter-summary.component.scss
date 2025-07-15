@@ -1,0 +1,26 @@
+.label {
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.active {
+  color: #648fff;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+  justify-content: center;
+
+  .box {
+    width: 15px;
+    height: 15px;
+    background-color: #648fff;
+    margin-right: 10px;
+  }
+}
+
+::ng-deep .mdc-floating-label {
+  padding-bottom: 15px;
+}

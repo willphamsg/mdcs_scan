@@ -1,0 +1,25 @@
+<footer>
+  <div class="container">
+    <div class="footer-items">
+      <div class="item">
+        <span>{{ dagw ? 'DAGW' : 'MDCS' }} SW Version: </span>
+      </div>
+      <div class="item"><span>Depot Abbreviation:</span></div>
+      <div class="item">
+        <div>
+          Date:
+          <span class="value">{{ currentDate | date: 'yyyy-MM-dd' }}</span>
+        </div>
+      </div>
+      <div class="item">
+        <div>
+          Time:
+          <span class="value">{{ currentDate | date: 'hh:mm:ss a' }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="event" [routerLink]="['event-history']">
+      <img src="assets/icons/eye.svg" /><span>Event History</span>
+    </div>
+  </div>
+</footer>

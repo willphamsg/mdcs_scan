@@ -1,0 +1,58 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [menuItem]="'Maintenance'"
+    [headerTitle]="getPageTitle()"></app-breadcrumbs>
+</div>
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">{{ getPageTitle() }}</h1>
+  </mat-card-header>
+  <mat-divider> </mat-divider>
+  <mat-card-content>
+    <div class="content-container">
+      <form [formGroup]="depotForm">
+        <div class="entry-actions">
+          <mat-form-field style="width: 420px">
+            <mat-select formControlName="depots" placeholder="Select Depot">
+              @for (depot of depots; track $index) {
+                <mat-option [value]="depot.depot_id">
+                  {{ depot.depot_name }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          @if (getPageTitle() === 'EOD Process' && selectedDepot) {
+            <app-filter
+              [filterConfigs]="filterConfigs"
+              [enableSearch]="false"></app-filter>
+
+            <div class="button-filter">
+              <button
+                type="button"
+                class="search-button btn edit"
+                mat-flat-button>
+                <mat-icon>edit</mat-icon>
+                Force EOD
+              </button>
+            </div>
+          }
+        </div>
+        <!-- Selected Filter Component -->
+        <app-selected-filter />
+      </form>
+
+      <mat-divider></mat-divider>
+
+      <router-outlet></router-outlet>
+
+      @if (!depotValue) {
+        <div class="empty-depot-display">
+          <img src="/assets/icons/camera.svg" alt="empty files" />
+          <p>Select a depot to show results.</p>
+          <p>No data to display.</p>
+        </div>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>

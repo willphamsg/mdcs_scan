@@ -1,0 +1,194 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [menuItem]="'Parameter Management'"
+    [headerTitle]="'DAGW Parameter Summary'"></app-breadcrumbs>
+</div>
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">DAGW Parameter Summary</h1>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <!-- FILTER COMPONENT -->
+    <div class="filter-wrapper">
+      <app-filter
+        [filterConfigs]="filterConfigs"
+        [placeholder]="'Depots, Parameter Name'"></app-filter>
+    </div>
+    <!-- Selected Filter Component -->
+    <app-selected-filter />
+
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      matSort
+      class="stripped"
+      (matSortChange)="sortHandler($event)">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
+        <td mat-cell *matCellDef="let element; let dataIndex = index">
+          {{ dataIndex + 1 }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="depot">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Depots</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.depot.depot_name }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="parameter_name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          Parameter Name
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.parameter_name }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="mdcs_live">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          <span class="text-align">
+            MDCS
+            <br />
+            Live
+          </span>
+        </th>
+        <td
+          [ngClass]="{ active: element.mdcs_live?.isActive }"
+          mat-cell
+          *matCellDef="let element">
+          {{ element.mdcs_live?.value }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dagw_live">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          <span class="text-align">
+            DAGW
+            <br />
+            Live
+          </span>
+        </th>
+        <td
+          [ngClass]="{ active: element.dagw_live?.isActive }"
+          mat-cell
+          *matCellDef="let element">
+          {{ element.dagw_live?.value }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="mdcs_trial">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          <span class="text-align">
+            MDCS
+            <br />
+            Trial
+          </span>
+        </th>
+        <td
+          [ngClass]="{ active: element.mdcs_trial?.isActive }"
+          mat-cell
+          *matCellDef="let element">
+          {{ element.mdcs_trial?.value }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dagw_trial">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          <span class="text-align">
+            DAGW
+            <br />
+            Trial
+          </span>
+        </th>
+        <td
+          [ngClass]="{ active: element.dagw_trial?.isActive }"
+          mat-cell
+          *matCellDef="let element">
+          {{ element.dagw_trial?.value }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="effective_date_live">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          <span class="text-align">
+            Effective Date & Time
+            <br />
+            DAGW Live
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{
+            element.effective_date_live === '-'
+              ? '-'
+              : (element.effective_date_live | date: 'dd/MM/yyyy HH:mm')
+          }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="effective_date_trial">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          <span class="text-align">
+            Effective Date & Time
+            <br />
+            DAGW Trial
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{
+            element.effective_date_trial === '-'
+              ? '-'
+              : (element.effective_date_trial | date: 'dd/MM/yyyy HH:mm')
+          }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="consistency">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Consistency</th>
+        <td class="active" mat-cell *matCellDef="let element">
+          <div
+            [ngClass]="
+              element.consistency === '1' ? 'check-circle' : 'cross-circle'
+            "></div>
+        </td>
+      </ng-container>
+
+      <tr
+        style="
+          background-color: #4a5964;
+          font-weight: 600;
+          color: white;
+          height: 40px;
+        "
+        mat-header-row
+        *matHeaderRowDef="tab1Columns"></tr>
+
+      <tr
+        style="height: 40px"
+        mat-row
+        *matRowDef="let row; columns: tab1Columns"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data" [attr.colspan]="tab1Columns.length">
+          No Records Found
+        </td>
+      </tr>
+    </table>
+    <div class="legend">
+      <div class="box"></div>
+      <span>Active</span>
+    </div>
+
+    <mat-divider />
+
+    <!-- PAGINATION COMPONENT -->
+    <div class="table-footer">
+      <app-pagination
+        [totalItems]="rowCount"
+        (pageChange)="onPageChange($event)"></app-pagination>
+      <div class="selected-item">Selected: {{ selection.length }}</div>
+    </div>
+  </mat-card-content>
+</mat-card>

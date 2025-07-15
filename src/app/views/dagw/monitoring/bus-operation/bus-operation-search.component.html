@@ -1,0 +1,259 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [showHome]="false"
+    [menuItem]="'Monitoring'"
+    [headerTitle]="'Bus Monitoring Management'"></app-breadcrumbs>
+</div>
+
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">Bus Monitoring Management</h1>
+  </mat-card-header>
+
+  <mat-divider> </mat-divider>
+  <mat-card-content>
+    <div class="filter-wrapper">
+      <app-filter [filterConfigs]="filterConfigs"></app-filter>
+    </div>
+    <!-- Selected Filter Component -->
+    <app-selected-filter />
+
+    <div class="table-wrapper">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        (matSortChange)="sortHandler($event)">
+        <!-- No. Column -->
+        <ng-container matColumnDef="id">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('id')">
+            No.
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('id')">
+            {{ element.id }}
+          </td>
+        </ng-container>
+
+        <!-- Depot Column -->
+        <ng-container matColumnDef="depot_id">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('depot_id')">
+            Depot
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('depot_id')">
+            {{ element.depot.depot_name }}
+          </td>
+        </ng-container>
+
+        <!-- Bus ID Column -->
+        <ng-container matColumnDef="bus_num">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('bus_num')">
+            Bus ID
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('bus_num')">
+            {{ element.bus_num }}
+          </td>
+        </ng-container>
+
+        <!-- Service Provider Id Column -->
+        <ng-container matColumnDef="service_num">
+          <th
+            [hidden]="!hiddenHandler('service_num')"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            Service No.
+          </th>
+          <td
+            [hidden]="!hiddenHandler('service_num')"
+            mat-cell
+            *matCellDef="let element">
+            {{ element.service_num }}
+          </td>
+        </ng-container>
+
+        <!-- Effective Date Column -->
+        <ng-container matColumnDef="download_status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('download_status')">
+            <div class="flex-box">
+              <p>Parameter</p>
+              <p>Download Status</p>
+            </div>
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('download_status')">
+            <span class="status" [ngClass]="element.download_status">{{
+              element.download_status | titlecase
+            }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Group Number Column -->
+        <ng-container matColumnDef="upload_status">
+          <th
+            [hidden]="!hiddenHandler('upload_status')"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            <div class="flex-box">
+              <p>Transaction</p>
+              <p>Upload Status</p>
+            </div>
+          </th>
+          <td
+            [hidden]="!hiddenHandler('upload_status')"
+            mat-cell
+            *matCellDef="let element">
+            <span class="status" [ngClass]="element.upload_status">{{
+              element.upload_status | titlecase
+            }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Effective Time Column -->
+        <ng-container matColumnDef="sam_status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('sam_status')">
+            SAM Auth Status
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('sam_status')">
+            <span class="status" [ngClass]="element.sam_status">{{
+              element.sam_status | titlecase
+            }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Connection Start Column -->
+        <ng-container matColumnDef="connect_time">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('connect_time')">
+            Connection Start
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('connect_time')">
+            <div class="flex-box">
+              <p style="color: #333">
+                {{ element.connect_time | date: 'dd/MM/yyyy' }}
+              </p>
+              <p>{{ element.connect_time | date: 'HH:mm:ss' }}</p>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Connection End Column -->
+        <ng-container matColumnDef="disconnect_time">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('disconnect_time')">
+            Connection End
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('disconnect_time')">
+            <div class="flex-box">
+              <p style="font-size: 16px; color: #333">
+                {{ element.disconnect_time | date: 'dd/MM/yyyy' }}
+              </p>
+              <p>{{ element.disconnect_time | date: 'HH:mm:ss' }}</p>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="conn_status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('conn_status')">
+            Connection Status
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('conn_status')"
+            style="text-align: center">
+            <span
+              *ngIf="!element.conn_status"
+              class="status"
+              [ngClass]="element.conn_status">
+              <mat-icon style="color: #9f0f0f">cancel</mat-icon>
+            </span>
+            <span
+              *ngIf="element.conn_status"
+              class="status"
+              [ngClass]="element.conn_status">
+              <mat-icon style="color: #009e73">check_circle</mat-icon>
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Updated On -->
+        <ng-container matColumnDef="updated_on">
+          <th
+            [hidden]="!hiddenHandler('updated_on')"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            Updated On
+          </th>
+          <td
+            [hidden]="!hiddenHandler('updated_on')"
+            mat-cell
+            *matCellDef="let element">
+            {{ element.updated_on }}
+          </td>
+        </ng-container>
+
+        <tr
+          style="background-color: #4a5964; font-weight: 600; color: white"
+          mat-header-row
+          *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+    <div class="flex-center-center">
+      <app-pagination></app-pagination>
+    </div>
+  </mat-card-content>
+</mat-card>

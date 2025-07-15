@@ -1,0 +1,427 @@
+<div class="mat-header">
+  <div>
+    <p
+      style="font-size: 24px; font-weight: 600; margin: 0"
+      class="flex-item-left">
+      {{ title }}
+    </p>
+  </div>
+  <!-- <div>
+    <button class="search-button" mat-flat-button class="btn">
+      <mat-icon> <img src="/assets/icons/import.png" alt="image" /></mat-icon>
+      Import
+    </button>
+  </div> -->
+</div>
+<mat-divider></mat-divider>
+<mat-dialog-content>
+  <form [formGroup]="myForm">
+    <ng-container formArrayName="items">
+      <mat-table
+        #table
+        [dataSource]="items.controls"
+        [class]="isDelete ? 'stripped' : ''">
+        <!--- Note that these columns can be defined in any order.
+                The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- Bus ID Column -->
+        <ng-container matColumnDef="bus_num">
+          <mat-header-cell *matHeaderCellDef>Bus ID</mat-header-cell>
+          <mat-cell
+            *matCellDef="let element"
+            [formGroup]="element"
+            class="labelCol">
+            @if (isDelete) {
+              {{ element.get('bus_num')?.value }}
+            } @else if (isUpdate) {
+              <div class="disabled-cont">
+                {{ element.get('bus_num')?.value }}
+              </div>
+            } @else {
+              <mat-form-field appearance="outline">
+                <input
+                  matInput
+                  placeholder="Bus ID"
+                  (keypress)="handleBusValidate($event)"
+                  formControlName="bus_num" />
+                <mat-icon matSuffix>search</mat-icon>
+                @if (element.get('bus_num')?.hasError('required')) {
+                  <mat-error>
+                    <strong>Required</strong>
+                  </mat-error>
+                }
+              </mat-form-field>
+            }
+
+            <!-- @if (isDelete) {
+              {{ element.get('bus_num')?.value }}
+            } @else {
+              <mat-form-field appearance="outline">
+                <input
+                  matInput
+                  placeholder="Bus ID"
+                  formControlName="bus_num" />
+                <mat-icon matSuffix>search</mat-icon>
+                @if (element.get('bus_num')?.hasError('required')) {
+                  <mat-error>
+                    <strong>Required</strong>
+                  </mat-error>
+                }
+              </mat-form-field>
+            } -->
+          </mat-cell>
+        </ng-container>
+
+        <!-- Depot Column -->
+        <ng-container matColumnDef="depot_id">
+          <mat-header-cell *matHeaderCellDef>Depot</mat-header-cell>
+          <mat-cell
+            *matCellDef="let element"
+            [formGroup]="element"
+            class="labelCol">
+            @if (isDelete) {
+              {{ element.get('depot_name')?.value }}
+            } @else if (isUpdate) {
+              <div class="disabled-cont">
+                {{ element.get('depot_name')?.value }}
+              </div>
+            } @else {
+              <mat-form-field appearance="outline">
+                <mat-select
+                  formControlName="depot_id"
+                  style="font-style: normal; width: 100%"
+                  placeholder="Depot"
+                  [(value)]="element.depot_id">
+                  <mat-option
+                    *ngFor="let option of depots"
+                    [value]="option.depot_id">
+                    {{ option.depot_name }}
+                  </mat-option>
+                </mat-select>
+                @if (element.get('depot_id')?.hasError('required')) {
+                  <mat-error>
+                    <strong>Required</strong>
+                  </mat-error>
+                }
+              </mat-form-field>
+            }
+
+            <!-- @if (isDelete) {
+              {{ getDepotName(element.get('depot_id')?.value) }}
+            } @else {
+              <mat-form-field appearance="outline">
+                <mat-select
+                  formControlName="depot_id"
+                  style="font-style: normal; width: 100%"
+                  placeholder="Depot"
+                  [(value)]="element.depot_id">
+                  <mat-option
+                    *ngFor="let option of depots"
+                    [value]="option.depot_id">
+                    {{ option.depot_name }}
+                  </mat-option>
+                </mat-select>
+                @if (element.get('bus_num')?.hasError('required')) {
+                  <mat-error>
+                    <strong>Required</strong>
+                  </mat-error>
+                }
+              </mat-form-field>
+            } -->
+          </mat-cell>
+        </ng-container>
+
+        <!-- Service No. Column -->
+        <ng-container matColumnDef="service_num">
+          <mat-header-cell *matHeaderCellDef>Service No.</mat-header-cell>
+          <mat-cell
+            *matCellDef="let element"
+            [formGroup]="element"
+            class="labelCol">
+            @if (isDelete) {
+              {{ element.get('service_num')?.value }}
+            } @else {
+              <mat-form-field
+                [style.width.px]="250"
+                class="custom-input"
+                appearance="outline">
+                <input
+                  matInput
+                  placeholder="Service No."
+                  formControlName="service_num" />
+                <!-- <mat-select
+                  style="font-style: normal; width: 100%"
+                  placeholder="Service No."
+                  formControlName="service_num"
+                  appearance="outline">
+                  <mat-option
+                    *ngFor="let option of serviceNumOptions"
+                    [value]="option"
+                    >{{ option }}</mat-option
+                  >
+                </mat-select> -->
+                @if (
+                  element.get('service_num')?.hasError('required') &&
+                  element.get('service_num')?.touched
+                ) {
+                  <mat-error>
+                    <strong>Required</strong>
+                  </mat-error>
+                }
+                @if (
+                  element.get('service_num')?.hasError('maxlength') &&
+                  element.get('service_num')?.touched
+                ) {
+                  <mat-error
+                    ><strong>Maximum of 4 characters allowed</strong></mat-error
+                  >
+                }
+              </mat-form-field>
+            }
+          </mat-cell>
+        </ng-container>
+
+        <!-- Day Type Column -->
+        <ng-container matColumnDef="day_type">
+          <mat-header-cell *matHeaderCellDef>Day Type</mat-header-cell>
+          <mat-cell
+            *matCellDef="let element"
+            [formGroup]="element"
+            class="labelCol">
+            @if (isDelete) {
+              {{ element.get('day')?.value }}
+            } @else if (isUpdate) {
+              <div class="disabled-cont">
+                {{ element.get('day')?.value }}
+              </div>
+            } @else {
+              <mat-form-field
+                [style.width.px]="250"
+                class="custom-input"
+                appearance="outline">
+                <mat-select
+                  style="font-style: normal; width: 100%"
+                  placeholder="Day Type"
+                  formControlName="day_type"
+                  [(value)]="element.day_type">
+                  <mat-option
+                    *ngFor="let option of options"
+                    [value]="option.id"
+                    >{{ option.value }}</mat-option
+                  >
+                </mat-select>
+                @if (
+                  element.get('day_type')?.hasError('required') &&
+                  element.get('day_type')?.touched
+                ) {
+                  <mat-error><strong>Required</strong></mat-error>
+                }
+              </mat-form-field>
+            }
+
+            <!-- @if (isDelete) {
+              {{ element.get('day')?.value }}
+            } @else {
+              <mat-form-field
+                [style.width.px]="250"
+                class="custom-input"
+                appearance="outline">
+                <mat-select
+                  style="font-style: normal; width: 100%"
+                  placeholder="Day Type"
+                  formControlName="day"
+                  [(value)]="element.day">
+                  <mat-option
+                    *ngFor="let option of options"
+                    [value]="option.id"
+                    >{{ option.value }}</mat-option
+                  >
+                </mat-select>
+                @if (
+                  element.get('day')?.hasError('required') &&
+                  element.get('day')?.touched
+                ) {
+                  <mat-error><strong>Required</strong></mat-error>
+                }
+              </mat-form-field>
+            } -->
+          </mat-cell>
+        </ng-container>
+
+        <!-- Expected Last Arrival Time Column -->
+        <ng-container matColumnDef="est_arrival_time">
+          <mat-header-cell *matHeaderCellDef>
+            Expected Last Arrival Time
+          </mat-header-cell>
+          <mat-cell
+            *matCellDef="let element"
+            [formGroup]="element"
+            class="labelCol">
+            @if (isDelete) {
+              {{ element.get('est_arrival_time')?.value }}
+            } @else {
+              <mat-form-field appearance="outline" [style.width.px]="250">
+                <input
+                  matInput
+                  name="selected_time_A"
+                  [format]="24"
+                  [ngxMatTimepicker]="pickerA"
+                  formControlName="est_arrival_time"
+                  placeholder="Select"
+                  readonly />
+                <mat-icon matSuffix (click)="pickerA.open()">
+                  watch_later
+                </mat-icon>
+                <mat-error
+                  *ngIf="
+                    element.get('est_arrival_time')?.hasError('required') &&
+                    element.get('est_arrival_time')?.touched
+                  ">
+                  <strong>Required</strong>
+                </mat-error>
+              </mat-form-field>
+              <ngx-mat-timepicker
+                #pickerA
+                dottedMinutesInGap
+                enableKeyboardInput></ngx-mat-timepicker>
+            }
+          </mat-cell>
+        </ng-container>
+
+        <!-- Expected Number of Arrival Column -->
+        <ng-container matColumnDef="est_arrival_count">
+          <mat-header-cell *matHeaderCellDef>
+            Expected Number of Arrival
+          </mat-header-cell>
+          <mat-cell
+            *matCellDef="let element"
+            [formGroup]="element"
+            class="labelCol">
+            @if (isDelete) {
+              {{ element.get('est_arrival_count')?.value }}
+            } @else {
+              <mat-form-field
+                [style.width.px]="250"
+                class="custom-input"
+                appearance="outline">
+                <input
+                  matInput
+                  min="0"
+                  max="255"
+                  type="number"
+                  placeholder="Expected Number of Arrival"
+                  formControlName="est_arrival_count" />
+                <!-- <mat-select
+                  style="font-style: normal; width: 100%"
+                  formControlName="est_arrival_count"
+                  placeholder="Select"
+                  [(value)]="element.est_arrival_count">
+                  <mat-option
+                    *ngFor="let option of arrivalCountOptions"
+                    [value]="option"
+                    >{{ option }}</mat-option
+                  >
+                </mat-select> -->
+                @if (
+                  element.get('est_arrival_count')?.hasError('required') &&
+                  element.get('est_arrival_count')?.touched
+                ) {
+                  <mat-error><strong>Required</strong></mat-error>
+                }
+
+                @if (
+                  element.get('est_arrival_count')?.hasError('min') ||
+                  (element.get('est_arrival_count')?.hasError('max') &&
+                    element.get('est_arrival_count')?.touched)
+                ) {
+                  <mat-error
+                    ><strong>Range should be from 0 to 255</strong></mat-error
+                  >
+                }
+              </mat-form-field>
+            }
+          </mat-cell>
+        </ng-container>
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+          <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+          <mat-cell *matCellDef="let element; let i = index" class="labelCol">
+            <button
+              class="small-btn"
+              mat-icon-button
+              type="button"
+              (click)="removeItem(i)">
+              <img
+                src="/assets/icons/mdcs-icon-delete.svg"
+                alt="image"
+                class="icon-delete" />
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns"
+          style="
+            background-color: #4a5964;
+            font-weight: 600;
+            color: white;
+          "></mat-header-row>
+        <mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          style="min-height: auto"></mat-row>
+      </mat-table>
+    </ng-container>
+  </form>
+</mat-dialog-content>
+<button
+  *ngIf="!isDelete"
+  (click)="addItem()"
+  class="btn-add divider line razor">
+  <mat-icon>add_circle</mat-icon>
+  <div class="text-btn">Add Bus Entry</div>
+</button>
+<mat-divider></mat-divider>
+<mat-dialog-actions>
+  <div class="mat-footer">
+    <div>
+      <p>
+        Total: {{ rowCount }}
+        <strong>Record(s)</strong>
+      </p>
+    </div>
+    <div>
+      <div class="btn-container">
+        <div>
+          <button
+            class="h-40"
+            [mat-dialog-close]="'cancel'"
+            mat-stroked-button
+            mat-dialog-close>
+            Cancel
+          </button>
+        </div>
+        <div>
+          <button
+            class="h-40"
+            *ngIf="!isDelete"
+            [mat-dialog-close]="'saveAsDraft'"
+            mat-stroked-button
+            mat-dialog-close>
+            Save as draft
+          </button>
+        </div>
+        <div>
+          <button
+            type="button"
+            class="btn local-primary"
+            mat-button
+            cdkFocusInitial
+            (click)="onSubmit()">
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-actions>

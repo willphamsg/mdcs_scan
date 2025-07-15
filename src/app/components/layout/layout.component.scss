@@ -1,0 +1,25 @@
+.main-background {
+  background-image: url("/assets/images/Background.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+
+  .main-container {
+    padding: 0 45px;
+    justify-content: center;
+    margin: auto;
+    flex-grow: 1;
+    height: calc(100vh - 64px - 32px); //100vh - header - footer
+    overflow-y: auto;
+    // height: 90%;
+  }
+
+  .breadcrumbs {
+    margin-top: 10px;
+  }
+
+  .main-content {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}

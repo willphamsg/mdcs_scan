@@ -1,0 +1,26 @@
+<div>
+  <div class="wrapper">
+    <div>
+      <img
+        class="icon"
+        [src]="data?.type === 'success' ? iconUrlSuccess : iconUrlError"
+        alt="success icon" />
+    </div>
+    <div>
+      <h1 class="title">{{ data?.title || 'Success!' }}</h1>
+      @if (isMessageString) {
+        <span class="snackbar-message">{{ data?.message }}</span>
+      } @else {
+        @for (message of data?.message; track message) {
+          <h4 class="multi-title">{{ message?.title }}</h4>
+          <p class="multi-message">{{ message?.message }}</p>
+        } @empty {
+          <div>No Error message</div>
+        }
+      }
+    </div>
+  </div>
+  <button class="snackbar-action" (click)="dismiss()">
+    <img src="/assets/icons/close.svg" alt="close" />
+  </button>
+</div>

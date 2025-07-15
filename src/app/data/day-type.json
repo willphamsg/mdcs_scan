@@ -1,0 +1,14 @@
+[
+  {
+    "id": "w",
+    "value": "WEEKDAY"
+  },
+  {
+    "id": "s",
+    "value": "SATURDAY"
+  },
+  {
+    "id": "p",
+    "value": "PUBLIC HOLIDAY AND SUNDAY"
+  }
+]
