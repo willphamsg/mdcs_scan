@@ -1,0 +1,97 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [menuItem]="'Monitoring'"
+    [headerTitle]="'View Card Key Versions'"></app-breadcrumbs>
+</div>
+
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">View Card Key Versions</h1>
+  </mat-card-header>
+  <mat-divider> </mat-divider>
+  <mat-card-content>
+    <div class="filter-wrapper">
+      <mat-form-field>
+        <mat-select
+          [(ngModel)]="depotSelected"
+          placeholder="Select Depot"
+          (selectionChange)="handleSelectDepot($event)">
+          <mat-option *ngFor="let depot of depots" [value]="depot.depot_id">
+            {{ depot.depot_name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <ng-container *ngIf="depotSelected">
+        <!-- <mat-form-field>
+          <input matInput placeholder="Search by keyword" type="search" />
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field> -->
+
+        <mat-form-field appearance="outline">
+          <input
+            matInput
+            placeholder="Search by keyword"
+            [formControl]="searchControl"
+            type="search" />
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field>
+
+        <mat-checkbox
+          [(ngModel)]="chkInconsistent"
+          style="margin-left: 20px"
+          color="primary">
+          Inconsistent Card Key Versions
+        </mat-checkbox>
+      </ng-container>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div
+      [style.border-bottom-width]="depotSelected ? '1px' : 0"
+      class="card-key-version-content">
+      @if (depotSelected) {
+        <div class="card-key-table">
+          <table>
+            <tr>
+              <th>DAGW Card Key Versions</th>
+              <td>55</td>
+              <td>56</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="legend">
+          <div class="flex-center-center">
+            <div class="box box-yellow"></div>
+            <span>Inconsistent</span>
+          </div>
+          <div class="flex-center-center">
+            <div class="box box-orange"></div>
+            <span>Authentication Failure</span>
+          </div>
+        </div>
+
+        <ag-grid-angular
+          style="width: max-content; min-width: 100%; height: 100%"
+          [gridOptions]="gridOptions"
+          class="ag-theme-quartz common-ag" />
+      }
+    </div>
+    <div *ngIf="depotSelected" class="flex-center-center">
+      <app-pagination
+        [totalItems]="rowCount"
+        [currentPageInput]="currentPage"
+        (pageChange)="onPageChange($event)"></app-pagination>
+    </div>
+  </mat-card-content>
+</mat-card>

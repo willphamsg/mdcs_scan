@@ -1,0 +1,203 @@
+<div class="dashboard-container">
+  <div class="row">
+    <h1 class="col-8">Welcome to MDCS</h1>
+    <div class="col-4 bg-white dropdown-wrapper">
+      <mat-form-field style="width: 100%">
+        <mat-select
+          [(ngModel)]="depotSelected"
+          placeholder="Select Bus Depot"
+          (selectionChange)="handleSelectDepot($event)">
+          <mat-option *ngFor="let depot of depots" [value]="depot.depot_id">
+            {{ depot.depot_name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="row dashboard-content">
+    <div class="col-8">
+      <div class="row">
+        <mat-card class="col-3 first-card">
+          <mat-card-content class="row card-content">
+            <div class="card-icon">
+              <img src="/assets/icons/dashboard-front-bus.svg" alt="" />
+            </div>
+            <div class="card-text">
+              <h2>9999</h2>
+              <p>Total Active Bus</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="col-3 first-card">
+          <mat-card-content class="row card-content">
+            <div class="card-icon">
+              <img src="/assets/icons/dashboard-bus.svg" alt="" />
+            </div>
+            <div class="card-text">
+              <h2>9999 of 9999</h2>
+              <p>Buses Not Reaching Depot</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="col-3 first-card">
+          <mat-card-content class="row card-content">
+            <div class="card-icon">
+              <img src="/assets/icons/dashboard-breakdown.svg" alt="" />
+            </div>
+            <div class="card-text">
+              <h2>9999</h2>
+              <p>Bus Undergoing Maintenance</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <mat-card class="chart-card">
+        <div class="row chart-content">
+          <div class="flex-1 chart-visualize">
+            <h2>No of Bus Connected to Depot</h2>
+            <div class="chart-wrapper">
+              <div class="height: 100%; display: flex;">
+                <canvas
+                  baseChart
+                  [data]="barChartData"
+                  [options]="barChartOptions"
+                  [type]="barChartType"
+                  (chartHover)="chartHovered($event)"
+                  (chartClick)="chartClicked($event)">
+                </canvas>
+              </div>
+              <!-- <button
+                mat-button
+                mat-raised-button
+                color="primary"
+                (click)="randomize()">
+                Update
+              </button> -->
+            </div>
+          </div>
+          <div class="col-3 depot-status">
+            <h2>Bus Depot Status</h2>
+            <ul>
+              @for (depot of depotsForChart; let index = $index; track index) {
+                <li class="row">
+                  <div class="flex-1">
+                    {{ depot.name }}
+                  </div>
+                  <img
+                    *ngIf="depot.status === 'success'"
+                    src="/assets/icons/dashboard-check.svg"
+                    alt="" />
+                  <img
+                    *ngIf="depot.status === 'error'"
+                    src="/assets/icons/dashboard-warning.svg"
+                    alt="" />
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card class="depot-card">
+        <mat-card-header>
+          <mat-card-title>No of Bus Arrived in Depot</mat-card-title>
+        </mat-card-header>
+        <div class="row depot-wrapper">
+          @for (depot of depotsForChart; let index = $index; track index) {
+            <div class="col-3 depot-column">
+              <div class="depot-block">
+                <div class="depot-name">
+                  {{ depot.name }}
+                </div>
+
+                <div class="progress">
+                  <div class="barOverflow">
+                    <div class="bar"></div>
+                  </div>
+                  <span class="tooltip arrived">{{ depot.arrived }}</span>
+                  <span class="tooltip not-arrived">{{
+                    depot.not_arrived
+                  }}</span>
+                  <span class="percent">{{
+                    (depot.arrived / (depot.arrived + depot.not_arrived)) * 100
+                  }}</span>
+                </div>
+
+                <div class="legend">
+                  <div class="arrived">Arrived</div>
+                  <div class="not-arrived">Did Not Arrived</div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="col-4">
+      <mat-card class="second-card event-card">
+        <mat-card-header>
+          <mat-card-title>Upcoming Events</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @for (event of events; let index = $index; track index) {
+            <a class="row second-content">
+              <img src="/assets/icons/dashboard-event.svg" alt="" />
+              <div class="flex-1 second-text">
+                <h2>{{ event.desc }}</h2>
+                <p>{{ event.date | date: 'MMMM YYYY' }}</p>
+              </div>
+              <mat-icon>chevron_right</mat-icon>
+            </a>
+          }
+        </mat-card-content>
+        <mat-card-actions class="second-action">
+          <a>View All</a>
+        </mat-card-actions>
+      </mat-card>
+
+      <mat-card class="second-card task-list-card">
+        <mat-card-header>
+          <mat-card-title>Tasks List</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          @for (task of taskList; let index = $index; track index) {
+            <a class="row second-content">
+              <img src="/assets/icons/dashboard-task.svg" alt="" />
+              <div class="flex-1 second-text">
+                <h2>{{ task.desc }}</h2>
+              </div>
+              <mat-icon>chevron_right</mat-icon>
+            </a>
+          }
+        </mat-card-content>
+        <mat-card-actions class="second-action">
+          <a>View All</a>
+        </mat-card-actions>
+      </mat-card>
+
+      <mat-card class="second-card quick-link-card">
+        <mat-card-header>
+          <mat-card-title>Quicklinks</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @for (item of quickLinks; let index = $index; track index) {
+            <a
+              replaceUrl="true"
+              [routerLink]="['/dacs/' + item.link]"
+              class="row second-content">
+              <img src="/assets/icons/dashboard-link.svg" alt="" />
+              <div class="flex-1 second-text">
+                <h3>{{ item.desc }}</h3>
+              </div>
+              <mat-icon>chevron_right</mat-icon>
+            </a>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

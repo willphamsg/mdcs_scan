@@ -1,0 +1,100 @@
+<footer>
+  <div class="container">
+    <div class="footer-items left">
+      @if (!!version) {
+        <div class="item">
+          <span class="label">{{ dagw ? 'DAGW' : 'MDCS' }} SW Version: </span>
+          <span class="value"> {{ version }}</span>
+        </div>
+      }
+      @if (!!serviceProvider) {
+        <div class="item">
+          <span class="label">Service Provider: </span>
+          <span class="value"> {{ serviceProvider }}</span>
+        </div>
+      }
+      @if (!!depotAbbreviation) {
+        <div class="item">
+          <span class="label">Depot Abbreviation: </span>
+          <span class="value"> {{ depotAbbreviation }}</span>
+        </div>
+      }
+      @if (systems.length > 0) {
+        <div class="item">
+          <button
+            type="button"
+            mat-flat-button
+            class="btn-system"
+            [matMenuTriggerFor]="menu"
+            #menuTrigger="matMenuTrigger">
+            <div class="system-info">
+              <!-- <img src="/assets/icons/info.svg" alt="info icon" /> -->
+              <!-- <mat-icon style="color: #000">info</mat-icon> -->
+              <img src="/assets/icons/sys-info.svg" alt=" sys info" />
+              System Connection:
+              <!-- <mat-icon style="color: #009e73">check_circle</mat-icon> -->
+              <img src="/assets/icons/sys-connected.svg" alt=" sys connected" />
+              <span style="color: #009e73; padding-right: 6px">{{
+                connectedCount()
+              }}</span>
+              <img
+                src="/assets/icons/sys-disconnected.svg"
+                alt=" sys disconnected" />
+              <!-- <mat-icon style="color: #9f0f0f">cancel</mat-icon> -->
+              <span style="color: #9f0f0f">{{ disconnectedCount() }}</span>
+            </div>
+          </button>
+
+          <mat-menu #menu="matMenu">
+            <div class="sys-list">
+              @for (sys of systems; track sys.name) {
+                <div class="sys-item">
+                  <p>{{ sys.name }}:</p>
+                  <span>
+                    @if (sys.status === 1) {
+                      <img
+                        src="/assets/icons/sys-connected.svg"
+                        alt=" sys connected" />
+                    } @else {
+                      <img
+                        src="/assets/icons/sys-disconnected.svg"
+                        alt=" sys disconnected" />
+                    }
+                  </span>
+                </div>
+              }
+            </div>
+          </mat-menu>
+        </div>
+      }
+    </div>
+    <div class="footer-items right">
+      @if ([0, 1].includes(pdtStatus)) {
+        <div class="item">
+          <div class="pdt-file" [class.active]="pdtStatus === 1">
+            @if (pdtStatus === 1) {
+              <mat-icon style="color: #fff">check</mat-icon>
+            } @else {
+              <mat-icon style="color: #fff">close</mat-icon>
+            }
+            PDT File
+            <img
+              src="/assets/icons/download.svg"
+              alt="download icon"
+              style="width: 18px" />
+          </div>
+        </div>
+      }
+      <div class="item">
+        <span class="value">{{ currentDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      @if (!dagw) {
+        <div class="item">
+          <div class="event" [routerLink]="['event-history']">
+            <img src="assets/icons/eye.svg" /><span>Event History</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</footer>

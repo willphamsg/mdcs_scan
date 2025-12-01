@@ -1,0 +1,34 @@
+[
+    {
+      "chk": true,
+      "field": "depot_id",
+      "name": "Depo Id",
+      "hidden": false
+    },
+    {
+      "chk": false,
+      "field": "business_date",
+      "name": "Business Date",
+      "hidden": false
+    },
+    {
+      "chk": false,
+      "field": "report_type",
+      "name": "Report Type",
+      "hidden": false
+    },
+    {
+      "chk": true,
+      "field": "action",
+      "name": "Action",
+      "hidden": false
+    },
+    {
+      "chk": false,
+      "field": "chk",
+      "name": "Check",
+      "hidden": false
+    }
+    
+  ]
+  

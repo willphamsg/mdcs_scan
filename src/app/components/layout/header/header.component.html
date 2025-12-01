@@ -1,0 +1,449 @@
+<mat-toolbar>
+  @if (!dagw) {
+    <div class="header-container">
+      <div class="item">
+        <img
+          class="menu-icon"
+          [src]="
+            isOpenMobileMenu
+              ? 'assets/icons/menu-open.svg'
+              : 'assets/icons/menu-close.svg'
+          "
+          alt="menu"
+          (click)="toggleMobileMenu($event)" />
+        <a
+          style="text-decoration: none"
+          [routerLink]="[routesUrl?.dashboard?.home]"
+          class="logo">
+          <span>MDCS</span>
+          <!-- <span class="sv-provider">SBST</span> -->
+        </a>
+      </div>
+      @for (nav of navList; track nav.value) {
+        <div class="item">
+          <button
+            mat-button
+            [matMenuTriggerFor]="sharedMenu"
+            class="parent-menu"
+            [ngClass]="{ active: activeMenu === nav.value }"
+            (menuOpened)="menuHandler('open', nav.value)"
+            (menuClosed)="menuHandler('close', nav.value)">
+            {{ nav.label }}
+            <mat-icon
+              class="menu-button"
+              [ngClass]="{ rotated: expandedMenu[nav.value] }"
+              >expand_more</mat-icon
+            >
+          </button>
+          <mat-menu #sharedMenu="matMenu">
+            @if (nav.subs && nav.subs.length > 0) {
+              @for (sub of nav.subs; track sub.value) {
+                @if (!!sub?.target) {
+                  <a
+                    mat-menu-item
+                    href="{{ sub.href }}"
+                    routerLinkActive="active"
+                    class="menu"
+                    target="sub.target">
+                    {{ sub.label }}
+                  </a>
+                } @else if (!!sub?.href) {
+                  <button
+                    mat-menu-item
+                    [routerLink]="[sub.href]"
+                    routerLinkActive="active"
+                    class="menu"
+                    (click)="setActiveMu(nav.value)">
+                    {{ sub.label }}
+                  </button>
+                } @else if (sub.subs && sub.subs.length > 0) {
+                  <button
+                    mat-menu-item
+                    routerLinkActive="active"
+                    [matMenuTriggerFor]="sharedSubMenu"
+                    class="menu">
+                    {{ sub.label }}
+                  </button>
+                  <mat-menu #sharedSubMenu="matMenu">
+                    @for (child of sub.subs; track child.value) {
+                      <button
+                        mat-menu-item
+                        [routerLink]="[child.href]"
+                        routerLinkActive="active"
+                        class="menu"
+                        (click)="setActiveMu(nav.value)">
+                        {{ child.label }}
+                      </button>
+                    }
+                  </mat-menu>
+                }
+              }
+            }
+          </mat-menu>
+        </div>
+      }
+      <div class="item">
+        <app-notification></app-notification>
+        <button
+          mat-icon-button
+          class="icon profile-btn"
+          [matMenuTriggerFor]="profile"
+          aria-label="Profile">
+          <img
+            [src]="
+              userProfile.avatarUrl ||
+              'https://material.angular.dev/assets/img/examples/shiba1.jpg'
+            "
+            alt="user avatar" />
+          <!-- <p>S</p> -->
+        </button>
+        <mat-menu #profile="matMenu" yPosition="below">
+          <div style="width: 360px; padding: 20px 0; border-radius: 4px">
+            <h3 style="text-align: center; font-size: 24px; font-weight: bold">
+              {{ userProfile.name || '' }}
+            </h3>
+            <p style="text-align: center; font-size: 16px; font-weight: bold">
+              {{ userProfile.role || '' }}
+            </p>
+            <button
+              mat-menu-item
+              style="border-top: 1px solid #eee; font-size: 16px">
+              Change Password
+            </button>
+            <button
+              mat-menu-item
+              type="button"
+              (click)="logOut()"
+              style="
+                border-top: 1px solid #eee;
+                font-size: 16px;
+                color: #9f0f0f;
+              ">
+              Log Out
+            </button>
+          </div>
+        </mat-menu>
+      </div>
+    </div>
+
+    <nav class="mobile-nav" #mobileNav [ngClass]="{ hide: !isOpenMobileMenu }">
+      @for (nav of navList; track nav.value) {
+        <mat-accordion multi>
+          <div class="panel-wrapper">
+            <mat-expansion-panel togglePosition="before">
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ nav.label }}</mat-panel-title>
+              </mat-expansion-panel-header>
+
+              @for (sub of nav.subs; track sub.value) {
+                @if (sub?.subs?.length > 0) {
+                  <div class="sub-panel-wrapper">
+                    <mat-expansion-panel togglePosition="before">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>{{ sub.label }}</mat-panel-title>
+                      </mat-expansion-panel-header>
+
+                      @for (child of sub.subs; track child.value) {
+                        <div class="nav-item">
+                          <button
+                            mat-menu-item
+                            [routerLink]="[child.href]"
+                            routerLinkActive="active"
+                            class="menu"
+                            [ngClass]="{
+                              'nav-active': checkNavActive(child.href)
+                            }"
+                            (click)="setActiveMu(nav.value)">
+                            {{ child.label }}
+                          </button>
+                        </div>
+                      }
+                    </mat-expansion-panel>
+                  </div>
+                } @else if (!!sub?.target) {
+                  <div class="nav-item">
+                    <a
+                      mat-menu-item
+                      href="{{ sub.href }}"
+                      routerLinkActive="active"
+                      class="menu"
+                      target="sub.target">
+                      {{ sub.label }}
+                    </a>
+                  </div>
+                } @else if (!!sub?.href) {
+                  <div class="nav-item">
+                    <button
+                      mat-menu-item
+                      [routerLink]="[sub.href]"
+                      routerLinkActive="active"
+                      class="menu"
+                      [ngClass]="{ 'nav-active': checkNavActive(sub.href) }"
+                      (click)="setActiveMu(nav.value)">
+                      {{ sub.label }}
+                    </button>
+                  </div>
+                }
+              }
+            </mat-expansion-panel>
+          </div>
+        </mat-accordion>
+      }
+    </nav>
+  }
+
+  @if (dagw) {
+    <div class="header-container dagw-header">
+      <div class="item">
+        <img
+          class="menu-icon"
+          [src]="
+            isOpenMobileMenu
+              ? 'assets/icons/menu-open.svg'
+              : 'assets/icons/menu-close.svg'
+          "
+          alt="menu"
+          (click)="toggleMobileMenu($event)" />
+        <a
+          style="text-decoration: none"
+          [routerLink]="[routesUrl?.busMonitoring.busOperation]"
+          class="logo">
+          <span>DAGW</span>
+          <!-- <span class="sv-provider">SBST</span> -->
+        </a>
+      </div>
+      @for (nav of dagwNavList; track nav.value) {
+        <div class="item">
+          <button
+            mat-button
+            [matMenuTriggerFor]="sharedMenu"
+            class="parent-menu"
+            [ngClass]="{ active: activeMenu === nav.value }"
+            (menuOpened)="menuHandler('open', nav.value)"
+            (menuClosed)="menuHandler('close', nav.value)">
+            {{ nav.label }}
+            <mat-icon
+              class="menu-button"
+              [ngClass]="{ rotated: expandedMenu[nav.value] }"
+              >expand_more</mat-icon
+            >
+          </button>
+          <mat-menu #sharedMenu="matMenu">
+            @if (nav.subs && nav.subs.length > 0) {
+              @for (sub of nav.subs; track sub.value) {
+                @if (!!sub?.href) {
+                  <button
+                    mat-menu-item
+                    [routerLink]="[sub.href]"
+                    routerLinkActive="active"
+                    class="menu"
+                    (click)="setActiveMu(nav.value)">
+                    {{ sub.label }}
+                  </button>
+                }
+              }
+            }
+          </mat-menu>
+        </div>
+      }
+      <!-- <div class="item">
+        <button
+          mat-button
+          class="menu"
+          [routerLink]="['/dagw/bus-monitoring']"
+          [ngClass]="{ active: activeMenu === 'monitoring' }"
+          (click)="setActiveMu('monitoring')"
+          class="parent-menu">
+          Monitoring
+        </button>
+      </div>
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="paramManagement"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'paramManagement' }"
+          (menuOpened)="menuHandler('open', 'paramManagement')"
+          (menuClosed)="menuHandler('close', 'paramManagement')">
+          Parameter Management
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['paramManagement'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #paramManagement="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.importParameter]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramManagement')">
+            Parameter File Import
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.exportParameter]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('paramManagement')">
+            Parameter File Export
+          </button>
+        </mat-menu>
+      </div>
+      <div class="item">
+        <button
+          mat-button
+          [matMenuTriggerFor]="messageDataManagement"
+          class="parent-menu"
+          [ngClass]="{ active: activeMenu === 'messageDataManagement' }"
+          (menuOpened)="menuHandler('open', 'messageDataManagement')"
+          (menuClosed)="menuHandler('close', 'messageDataManagement')">
+          Message Data Management
+          <mat-icon
+            class="menu-button"
+            [ngClass]="{ rotated: expandedMenu['messageDataManagement'] }"
+            >expand_more</mat-icon
+          >
+        </button>
+        <mat-menu #messageDataManagement="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.messageFileImport]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('messageDataManagement')">
+            Message File Import
+          </button>
+          <button
+            mat-menu-item
+            [routerLink]="[routesUrl?.parameterManagement?.messageFileExport]"
+            routerLinkActive="active"
+            class="menu"
+            (click)="setActiveMu('messageDataManagement')">
+            Message File Export
+          </button>
+        </mat-menu>
+      </div>
+      <div class="item">
+        <button
+          mat-button
+          class="menu"
+          [routerLink]="['/dagw/report/daily-report']"
+          [ngClass]="{ active: activeMenu === 'report' }"
+          (click)="setActiveMu('report')"
+          class="parent-menu">
+          Report
+        </button>
+      </div> -->
+
+      <div class="item">
+        <app-notification></app-notification>
+        <button
+          mat-icon-button
+          class="icon profile-btn"
+          [matMenuTriggerFor]="profile"
+          aria-label="Profile">
+          <img
+            [src]="
+              userProfile.avatarUrl ||
+              'https://material.angular.dev/assets/img/examples/shiba1.jpg'
+            "
+            alt="user avatar" />
+          <!-- <p>S</p> -->
+        </button>
+        <mat-menu #profile="matMenu" yPosition="below">
+          <div style="width: 360px; padding: 20px 0; border-radius: 4px">
+            <h3 style="text-align: center; font-size: 24px; font-weight: bold">
+              {{ userProfile.name || '' }}
+            </h3>
+            <p style="text-align: center; font-size: 16px; font-weight: bold">
+              {{ userProfile.role || '' }}
+            </p>
+            <button
+              mat-menu-item
+              style="border-top: 1px solid #eee; font-size: 16px">
+              Change Password
+            </button>
+            <button
+              mat-menu-item
+              type="button"
+              (click)="logOut()"
+              style="
+                border-top: 1px solid #eee;
+                font-size: 16px;
+                color: #9f0f0f;
+              ">
+              Log Out
+            </button>
+          </div>
+        </mat-menu>
+      </div>
+    </div>
+
+    <nav class="mobile-nav" #mobileNav [ngClass]="{ hide: !isOpenMobileMenu }">
+      @for (nav of dagwNavList; track nav.value) {
+        <mat-accordion multi>
+          <div class="panel-wrapper">
+            <mat-expansion-panel togglePosition="before">
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ nav.label }}</mat-panel-title>
+              </mat-expansion-panel-header>
+
+              @for (sub of nav.subs; track sub.value) {
+                @if (sub?.subs?.length > 0) {
+                  <div class="sub-panel-wrapper">
+                    <mat-expansion-panel togglePosition="before">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>{{ sub.label }}</mat-panel-title>
+                      </mat-expansion-panel-header>
+
+                      @for (child of sub.subs; track child.value) {
+                        <div class="nav-item">
+                          <button
+                            mat-menu-item
+                            [routerLink]="[child.href]"
+                            routerLinkActive="active"
+                            class="menu"
+                            [ngClass]="{
+                              'nav-active': checkNavActive(child.href)
+                            }"
+                            (click)="setActiveMu(nav.value)">
+                            {{ child.label }}
+                          </button>
+                        </div>
+                      }
+                    </mat-expansion-panel>
+                  </div>
+                } @else if (!!sub?.target) {
+                  <div class="nav-item">
+                    <a
+                      mat-menu-item
+                      href="{{ sub.href }}"
+                      routerLinkActive="active"
+                      class="menu"
+                      target="sub.target">
+                      {{ sub.label }}
+                    </a>
+                  </div>
+                } @else if (!!sub?.href) {
+                  <div class="nav-item">
+                    <button
+                      mat-menu-item
+                      [routerLink]="[sub.href]"
+                      routerLinkActive="active"
+                      class="menu"
+                      [ngClass]="{ 'nav-active': checkNavActive(sub.href) }"
+                      (click)="setActiveMu(nav.value)">
+                      {{ sub.label }}
+                    </button>
+                  </div>
+                }
+              }
+            </mat-expansion-panel>
+          </div>
+        </mat-accordion>
+      }
+    </nav>
+  }
+</mat-toolbar>

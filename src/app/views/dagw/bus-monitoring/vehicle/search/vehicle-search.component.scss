@@ -1,0 +1,18 @@
+.label {
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 16px;
+
+  &.active {
+    background-color: #009e73;
+  }
+
+  &.inactive {
+    background-color: #ffb000;
+    color: #000;
+  }
+}

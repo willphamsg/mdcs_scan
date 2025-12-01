@@ -1,0 +1,169 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [menuItem]="'Parameter Management'"
+    [headerTitle]="'Parameter File Export'"></app-breadcrumbs>
+</div>
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">Parameter File Export</h1>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="entry-actions extra-format">
+      <div style="display: flex; flex-direction: column">
+        <label style="font-weight: 700">Depot Name</label>
+        <mat-form-field style="width: 420px">
+          <mat-select
+            placeholder="Select Depot"
+            (selectionChange)="handleSelectDepot($event)">
+            @for (depot of depots; track $index) {
+              <mat-option [value]="depot.depot_id">
+                {{ depot.depot_name }}
+              </mat-option>
+            }
+          </mat-select>
+          <!-- <mat-icon style="padding: unset !important" matSuffix
+            >keyboard_arrow_down</mat-icon
+          > -->
+        </mat-form-field>
+      </div>
+
+      @if (!!depotSelected) {
+        <app-filter [filterConfigs]="filterConfigs"></app-filter>
+
+        <!-- <div class="button-filter"></div> -->
+        <div class="item">
+          <button
+            type="button"
+            [disabled]="selection.length === 0"
+            class="btn-download"
+            (click)="downloadHandler()">
+            <img src="/assets/icons/export.svg" class="download-icon" alt="" />
+            Export
+          </button>
+        </div>
+      }
+    </div>
+    <!-- Selected Filter Component -->
+    <app-selected-filter />
+
+    <div class="table-wrapper">
+      <table mat-table class="stripped" [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
+          <td mat-cell *matCellDef="let element; let dataIndex = index">
+            {{ dataIndex + 1 }}
+          </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="depot">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Depots</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.depot }}
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="fileId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Parameter File ID <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.fileId }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="parameterName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Parameter File Name <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.parameterName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="version">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Parameter File Version <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.version }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Type <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.type }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Export Status <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span
+              [ngClass]="{
+                'status-green': element.status === 'Exported',
+                'status-red': element.status === 'Failed'
+              }">
+              {{ element.status }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Description <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.description }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="chk">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox
+              onkeypress=""
+              [(ngModel)]="chkAll"
+              (change)="checkAllHandler($event)"
+              color="primary"></mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-checkbox
+              [checked]="element.chk"
+              (change)="checkHandler($event, element)"
+              onkeypress=""
+              color="primary"></mat-checkbox>
+          </td>
+        </ng-container>
+
+        <tr
+          style="background-color: #4a5964; font-weight: 600; color: white"
+          mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+        <tr
+          style="height: 40px"
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="data-row"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            No Records Found
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- <app-pagination></app-pagination> -->
+
+    <div class="table-footer">
+      <app-pagination></app-pagination>
+      <div class="selected-item">Selected: {{ selection.length }}</div>
+    </div>
+  </mat-card-content>
+</mat-card>

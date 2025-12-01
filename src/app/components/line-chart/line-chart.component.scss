@@ -1,0 +1,15 @@
+.chart {
+  width: 100%;
+  min-height: 300px;
+  background-color: #f3f7ff;
+  border-radius: 4px;
+  padding: 16px;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+canvas {
+  border-radius: 4px;
+  width: 100% !important;
+  height: 100% !important;
+}

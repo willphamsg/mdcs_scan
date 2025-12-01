@@ -1,0 +1,57 @@
+<div class="content-container">
+  <form [formGroup]="adhocForm">
+    <div
+      class="entry-actions"
+      style="margin-bottom: 20px; display: flex; align-items: center">
+      <div style="display: flex; flex-direction: column">
+        <label style="font-weight: 700">Depot Name</label>
+        <mat-form-field style="width: 320px">
+          <mat-select
+            formControlName="depots"
+            placeholder="Select Depot"
+            multiple>
+            @for (depot of depots; track $index) {
+              <mat-option [value]="depot.depot_id">
+                {{ depot.depot_name }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-icon style="padding: unset !important" matSuffix
+            >keyboard_arrow_down</mat-icon
+          >
+        </mat-form-field>
+      </div>
+
+      <div style="display: flex; flex-direction: column">
+        <label style="font-weight: 700">SP Name</label>
+        <mat-form-field style="width: 320px">
+          <mat-select formControlName="spName" placeholder="Select Depot">
+            @for (depot of spName; track $index) {
+              <mat-option [value]="depot.id">
+                {{ depot.value }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-icon style="padding: unset !important" matSuffix
+            >keyboard_arrow_down</mat-icon
+          >
+        </mat-form-field>
+      </div>
+
+      @if (adhocForm.valid) {
+        <div class="button-filter" style="margin: 20px 0 0 auto">
+          <button type="button" class="search-button btn edit" mat-flat-button>
+            <mat-icon>visibility</mat-icon>
+            View Report
+          </button>
+        </div>
+      }
+    </div>
+  </form>
+
+  <div class="empty-depot-display">
+    <img src="/assets/icons/camera.svg" alt="empty files" />
+    <p>Complete selection to view info.</p>
+    <p>No data to display.</p>
+  </div>
+</div>

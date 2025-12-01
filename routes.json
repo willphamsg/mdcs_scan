@@ -1,0 +1,14 @@
+{
+  "/depot/search": "/depot",
+  "/daily-bus-list/search": "/daily_bus",
+  "/master-bus-list/search": "/master_bus",
+  "/master-bus-list*": "/master_bus$1",
+  "/bus-transfer/search": "/transfer_bus",
+  "/bus-transfer*": "/transfer_bus$1",
+  "/parameter-management/search": "/parameter_management",
+  "/parameter-management*": "/parameter_management$1",
+  "/parameter-trial/search": "/parameter_trial",
+  "/parameter-trial*": "/parameter_trial$1",
+  "/general-information*": "/general$1",
+  "/card-key-version/search": "/card_key_version"
+}

@@ -1,0 +1,174 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [menuItem]="'Maintenance'"
+    headerTitle="EOD Process"></app-breadcrumbs>
+</div>
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">EOD Process</h1>
+  </mat-card-header>
+  <mat-divider> </mat-divider>
+  <mat-card-content>
+    <div class="content-container">
+      <form [formGroup]="depotForm">
+        <div
+          class="entry-actions"
+          style="margin-bottom: 20px; display: flex; align-items: center">
+          <div style="display: flex; flex-direction: column">
+            <label style="font-weight: 700">Depot Name</label>
+            <mat-form-field style="width: 320px">
+              <mat-select
+                formControlName="depot"
+                placeholder="Select Depot"
+                [disabled]="isDisableForceEOD">
+                @for (depot of depots; track $index) {
+                  <mat-option [value]="depot.depot_id">
+                    {{ depot.depot_name }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        @if (params.search_select_filter['depot_id']) {
+          <div
+            class="entry-actions"
+            style="
+              margin-bottom: 20px;
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+              margin: 0;
+              border-top: 1px solid #e0e0e0;
+              padding: 20px 24px;
+            ">
+            <div style="display: flex; flex-direction: column">
+              <label style="font-weight: 700">Current Business Day</label>
+              <mat-form-field
+                style="min-width: 240px; background-color: #f7f7f7"
+                appearance="outline">
+                <input matInput formControlName="currentBusinessDate" />
+              </mat-form-field>
+            </div>
+
+            <div style="display: flex; flex-direction: column">
+              <label style="font-weight: 700">Last EOD Executed</label>
+              <mat-form-field
+                style="min-width: 240px; background-color: #f7f7f7"
+                appearance="outline">
+                <input matInput formControlName="lastEodDate" />
+              </mat-form-field>
+            </div>
+
+            <div class="button-filter" style="margin: 20px 0 0 auto">
+              <button
+                type="button"
+                class="search-button btn add"
+                (click)="forceEOD()"
+                mat-flat-button
+                [disabled]="isDisableForceEOD">
+                <mat-icon>power_settings_new</mat-icon>
+                Force EOD
+              </button>
+            </div>
+          </div>
+        }
+      </form>
+
+      @if (!params.search_select_filter['depot_id']) {
+        <div class="empty-depot-display">
+          <img src="/assets/icons/camera.svg" alt="empty files" />
+          <p>Select a depot to show results.</p>
+          <p>No data to display.</p>
+        </div>
+      } @else {
+        <div class="table-wrapper">
+          <table
+            mat-table
+            class="stripped"
+            [dataSource]="dataSource"
+            matSort
+            (matSortChange)="sortHandler($event)">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
+              <td mat-cell *matCellDef="let element; let dataIndex = index">
+                {{ dataIndex + 1 || '-' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="taskName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Tasks <span class="custom-sort"></span>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.taskName }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Description <span class="custom-sort"></span>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.description }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="startTime">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Start Time <span class="custom-sort"></span>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.startTime }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="endTime">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                End Time <span class="custom-sort"></span>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.endTime }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Status <span class="custom-sort"></span>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <span
+                  [ngClass]="{
+                    'status-green': element.status === 'Completed',
+                    'status-red': element.status === 'Failed',
+                    'status-orange': element.status === 'Processing',
+                    'status-grey': element.status === 'Not Started'
+                  }">
+                  {{ element.status }}
+                </span>
+              </td>
+            </ng-container>
+
+            <tr
+              class="table-column"
+              mat-header-row
+              *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+            @if (dataSource.length > 0) {
+              <tr
+                style="height: 40px"
+                mat-row
+                *matRowDef="let row; columns: displayedColumns"
+                class="data-row"></tr>
+            }
+          </table>
+        </div>
+        <app-pagination
+          [totalItems]="rowCount"
+          [currentPageInput]="currentPage"
+          (pageChange)="onPageChange($event)"></app-pagination>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>

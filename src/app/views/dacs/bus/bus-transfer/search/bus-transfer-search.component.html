@@ -1,0 +1,339 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [menuItem]="'Bus Management'"
+    [headerTitle]="'Bus Transfer'"></app-breadcrumbs>
+</div>
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">Bus Transfer</h1>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <mat-tab-group
+      mat-stretch-tabs="false"
+      mat-align-tabs="start"
+      [(selectedIndex)]="tabIdx"
+      (selectedTabChange)="onTabChange()">
+      >
+      <mat-tab label="action">
+        <ng-template mat-tab-label>
+          <div class="label">Action Required</div>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab label="managed">
+        <ng-template mat-tab-label>
+          <div class="label">Action History</div>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+
+    <div class="entry-actions">
+      @if (tabIdx === 0) {
+        <div class="import-wrapper">
+          <button class="import-button" mat-flat-button>
+            <mat-icon>
+              <img src="/assets/icons/import.svg" alt="image"
+            /></mat-icon>
+            Import
+          </button>
+          <input
+            #fileInput
+            type="file"
+            id="fileUpload"
+            class="input-file"
+            (change)="importHandler($event)" />
+        </div>
+      }
+
+      <app-filter [filterConfigs]="filterConfigs"></app-filter>
+
+      <div class="button-filter">
+        @if (tabIdx === 0) {
+          <div class="item">
+            <button
+              type="button"
+              [disabled]="selection.length === 0"
+              (click)="updateView('update')"
+              mat-flat-button
+              id="btnedit"
+              class="btn edit">
+              <mat-icon>edit</mat-icon>
+              Edit
+            </button>
+          </div>
+          <div class="item">
+            <button
+              type="button"
+              [disabled]="selection.length === 0"
+              (click)="updateView('approve')"
+              mat-flat-button
+              class="btn approve">
+              <mat-icon>checked</mat-icon>
+              Approve
+            </button>
+          </div>
+          <div class="item">
+            <button
+              type="button"
+              [disabled]="selection.length === 0"
+              (click)="updateView('reject')"
+              class="search-button"
+              mat-flat-button
+              class="btn reject">
+              <mat-icon>close</mat-icon>
+              Reject
+            </button>
+          </div>
+        } @else {
+          <app-month-filter />
+        }
+      </div>
+    </div>
+    <!-- Selected Filter Component -->
+    <app-selected-filter />
+
+    <div class="table-wrapper">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        class="stripped"
+        matSort
+        (matSortChange)="sortHandler($event)">
+        <!-- Check Column -->
+        <ng-container matColumnDef="chk">
+          <th mat-header-cell *matHeaderCellDef [hidden]="tabIdx !== 0">
+            <div class="custom-checkbox" (click)="onCheckAllToggle()">
+              @if (chkAll) {
+                <img
+                  src="/assets/icons/selected_checkbox.svg"
+                  alt="Selected Checkbox" />
+              } @else {
+                <img
+                  src="/assets/icons/white_checkbox.svg"
+                  alt="Unselected Checkbox" />
+              }
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let element" [hidden]="tabIdx !== 0">
+            <div class="custom-checkbox" (click)="checkboxToggle(element)">
+              @if (element.chk) {
+                <img
+                  src="/assets/icons/selected_checkbox.svg"
+                  alt="Selected Checkbox" />
+              } @else {
+                <img
+                  src="/assets/icons/white_checkbox.svg"
+                  alt="Unselected Checkbox" />
+              }
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Id Column -->
+        <ng-container matColumnDef="id">
+          <th
+            [hidden]="!hiddenHandler('id')"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            No.
+          </th>
+          <td
+            [hidden]="!hiddenHandler('id')"
+            mat-cell
+            *matCellDef="let element; let dataIndex = index">
+            {{ dataIndex + 1 }}
+          </td>
+        </ng-container>
+
+        <!-- Bus ID Column -->
+        <ng-container matColumnDef="bus_id">
+          <th
+            [hidden]="!hiddenHandler('bus_id')"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            Bus ID <span class="custom-sort"> </span>
+          </th>
+          <td
+            [hidden]="!hiddenHandler('bus_id')"
+            mat-cell
+            *matCellDef="let element">
+            {{ element.bus_id }}
+          </td>
+        </ng-container>
+
+        <!-- Current Depots Column -->
+        <ng-container matColumnDef="current_depot">
+          <th
+            [hidden]="!hiddenHandler('current_depot')"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            Current Depots <span class="custom-sort"> </span>
+          </th>
+          <td
+            [hidden]="!hiddenHandler('current_depot')"
+            mat-cell
+            *matCellDef="let element">
+            {{ element.current_depot_name }}
+          </td>
+        </ng-container>
+
+        <!-- Current Operator Column -->
+        <ng-container matColumnDef="current_operator">
+          <th
+            [hidden]="!hiddenHandler('current_operator')"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            Current Operator <span class="custom-sort"> </span>
+          </th>
+          <td
+            [hidden]="!hiddenHandler('current_operator')"
+            mat-cell
+            *matCellDef="let element">
+            {{ element.current_operator_name }}
+          </td>
+        </ng-container>
+
+        <!-- Effective Date and Time Column -->
+        <ng-container matColumnDef="current_effective_date">
+          <th
+            [hidden]="!hiddenHandler('current_effective_date')"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            <div class="flex-box">
+              <p>Current Effective</p>
+              <p>Date and Time</p>
+            </div>
+            <span class="custom-sort"> </span>
+          </th>
+          <td
+            [hidden]="!hiddenHandler('current_effective_date')"
+            mat-cell
+            *matCellDef="let element">
+            <div class="flex-box">
+              <p>
+                {{ element.current_effective_date | date: 'dd/MM/yyyy' }}
+              </p>
+              <p>{{ element.current_effective_date | date: 'HH:mm:ss' }}</p>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Future Depots Column -->
+        <ng-container matColumnDef="future_depot">
+          <th
+            [hidden]="!hiddenHandler('future_depot')"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            Future Depots <span class="custom-sort"> </span>
+          </th>
+          <td
+            [hidden]="!hiddenHandler('future_depot')"
+            mat-cell
+            *matCellDef="let element">
+            {{ element.future_depot_name }}
+          </td>
+        </ng-container>
+
+        <!-- Future Operator Column -->
+        <ng-container matColumnDef="future_operator">
+          <th
+            [hidden]="!hiddenHandler('future_operator')"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            Future Operator <span class="custom-sort"> </span>
+          </th>
+          <td
+            [hidden]="!hiddenHandler('future_operator')"
+            mat-cell
+            *matCellDef="let element">
+            {{ element.future_operator_name }}
+          </td>
+        </ng-container>
+
+        <!-- Target Date and Time Column -->
+        <ng-container matColumnDef="future_effective_date">
+          <th
+            [hidden]="!hiddenHandler('future_effective_date')"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            <div class="flex-box">
+              <p>Target Effective</p>
+              <p>Date and Time</p>
+            </div>
+            <span class="custom-sort"> </span>
+          </th>
+          <td
+            [hidden]="!hiddenHandler('future_effective_date')"
+            mat-cell
+            *matCellDef="let element">
+            <div class="flex-box">
+              <p>
+                {{ element.future_effective_date | date: 'dd/MM/yyyy' }}
+              </p>
+              <p>{{ element.future_effective_date | date: 'HH:mm:ss' }}</p>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="tabIdx === 0">
+            Status <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element" [hidden]="tabIdx === 0">
+            <span class="status" [ngClass]="element.status">
+              {{ element.status | titlecase }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="last_update">
+          <th
+            [hidden]="tabIdx === 0"
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            Last Update <span class="custom-sort"> </span>
+          </th>
+          <td [hidden]="tabIdx === 0" mat-cell *matCellDef="let element">
+            {{ element.last_update | date: 'dd/mm/yyy HH:mm' }}
+          </td>
+        </ng-container>
+
+        <tr
+          style="background-color: #4a5964; font-weight: 600; color: white"
+          mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="data-row"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            No Records Found
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="table-footer">
+      <app-pagination
+        [totalItems]="rowCount"
+        [currentPageInput]="currentPage"
+        (pageChange)="onPageChange($event)"></app-pagination>
+      <div class="selected-item">Selected: {{ selection.length }}</div>
+    </div>
+  </mat-card-content>
+</mat-card>

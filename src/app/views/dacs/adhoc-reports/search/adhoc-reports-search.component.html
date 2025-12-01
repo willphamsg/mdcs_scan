@@ -1,0 +1,242 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [menuItem]="'Report'"
+    [headerTitle]="'Ad-Hoc Report'"></app-breadcrumbs>
+</div>
+
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">Ad-Hoc Report</h1>
+  </mat-card-header>
+
+  <mat-divider> </mat-divider>
+  <mat-card-content>
+    <mat-tab-group
+      (selectedTabChange)="onTabChange($event)"
+      mat-stretch-tabs="false"
+      mat-align-tabs="start"
+      animationDuration="0ms">
+      @for (item of tabList; track item.key) {
+        <mat-tab [label]="item.key">
+          <ng-template mat-tab-label>
+            <div>{{ item?.title }}</div>
+          </ng-template>
+        </mat-tab>
+      }
+    </mat-tab-group>
+
+    <div class="entry-actions">
+      <app-filter [filterConfigs]="filterConfigs"></app-filter>
+
+      <div class="button-filter">
+        <div class="item">
+          <button
+            type="button"
+            [disabled]="selection.length === 0"
+            class="btn-download"
+            [matMenuTriggerFor]="downloadMenu"
+            (menuOpened)="menuHandler(true)"
+            (menuClosed)="menuHandler(false)">
+            <img
+              src="/assets/icons/download-icon.svg"
+              class="download-icon"
+              alt="" />
+            Download as
+            <div class="expand-icon">
+              <mat-icon [ngClass]="{ 'rotated-reverse': expandedMenu }"
+                >expand_more</mat-icon
+              >
+            </div>
+          </button>
+          <mat-menu #downloadMenu="matMenu">
+            <button
+              (click)="downloadHandler()"
+              mat-menu-item
+              class="menu-download">
+              Excel
+            </button>
+            <button (click)="downloadHandler()" mat-menu-item>CSV</button>
+          </mat-menu>
+        </div>
+      </div>
+    </div>
+    <!-- Selected Filter Component -->
+    <app-selected-filter />
+
+    <div class="table-wrapper">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        (matSortChange)="sortHandler($event)">
+        <!-- Check Column -->
+        <ng-container matColumnDef="chk">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox
+              onkeypress=""
+              [(ngModel)]="chkAll"
+              (change)="checkAllHandler($event)"
+              color="primary"></mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-checkbox
+              [checked]="element.chk"
+              (change)="checkHandler($event, element)"
+              onkeypress=""
+              color="primary"></mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Depot Column -->
+        <ng-container matColumnDef="depot_id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Depot</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.depot_name }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="service_provider_name">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('service_provider_name')">
+            Service Provider Name
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('service_provider_name')">
+            {{ element.service_provider_name }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="current_operator">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('current_operator')">
+            Current Operator
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('current_operator')">
+            {{ element.current_operator }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="future_operator">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('future_operator')">
+            Future Operator
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('future_operator')">
+            {{ element.future_operator }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="start_date">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('start_date')">
+            Start Date
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('start_date')">
+            {{ element.start_date }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="end_date">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('end_date')">
+            End Date
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('end_date')">
+            {{ element.end_date }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="month_type">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('month_type')">
+            Month Type
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('month_type')">
+            {{ element.month_type }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="report_type">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            [hidden]="!hiddenHandler('report_type')">
+            Report Type
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [hidden]="!hiddenHandler('report_type')">
+            {{ element.report_type }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              type="button"
+              class="search-button"
+              mat-button
+              class="btn btn-view">
+              <mat-icon>visibility</mat-icon>
+              View
+            </button>
+          </td>
+        </ng-container>
+
+        <tr
+          style="background-color: #4a5964; font-weight: 600; color: white"
+          mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            No Records Found
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="table-footer">
+      <app-pagination></app-pagination>
+      <div class="selected-item">Selected: {{ selection.length }}</div>
+    </div>
+  </mat-card-content>
+</mat-card>

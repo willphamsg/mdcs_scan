@@ -1,0 +1,91 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [showHome]="false"
+    [headerTitle]="'Event History'"></app-breadcrumbs>
+</div>
+
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">Event History</h1>
+  </mat-card-header>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-content>
+    <!-- FILTER COMPONENT -->
+    <div class="filter-wrapper">
+      <app-filter
+        [filterConfigs]="filterConfigs"
+        [placeholder]="'Search by keyword'"></app-filter>
+    </div>
+    <!-- Selected Filter Component -->
+    <app-selected-filter />
+
+    <div class="table-wrapper">
+      <table
+        mat-table
+        class="stripped"
+        [dataSource]="dataSource"
+        class="stripped"
+        matSort>
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
+          <td mat-cell *matCellDef="let element; let dataIndex = index">
+            {{ dataIndex + 1 || '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="depot">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Depots</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.depot.depot_name || '-' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="eventDateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Event Date Time <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.eventDateTime || '-' }}
+          </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="updateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Update Time <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.updateTime || '-' }}
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Description <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.description || '-' }}
+          </td>
+        </ng-container>
+
+        <tr
+          mat-header-row
+          *matHeaderRowDef="tab1Columns"
+          class="header-row"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: tab1Columns"
+          class="data-row"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="tab1Columns.length">
+            No Records Found
+          </td>
+        </tr>
+      </table>
+      <!-- PAGINATION COMPONENT -->
+      <app-pagination></app-pagination>
+    </div>
+  </mat-card-content>
+</mat-card>

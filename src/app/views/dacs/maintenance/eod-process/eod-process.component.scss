@@ -1,0 +1,49 @@
+// :host {
+//   flex: 1;
+//   display: flex;
+//   flex-direction: column;
+//   overflow: hidden;
+// }
+
+.content-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .empty-depot-display {
+    display: flex;
+    align-items: center;
+    margin-top: 50px;
+    flex-direction: column;
+    gap: 24px;
+
+    p:nth-child(2) {
+      font-size: 24px;
+      color: #000;
+    }
+    p:nth-child(3) {
+      font-size: 16px;
+      color: #828282;
+    }
+  }
+}
+
+.table-column {
+  background-color: #4a5964;
+  font-weight: 600;
+  color: white;
+  height: 40px;
+}
+
+::ng-deep .force-eod-dialog {
+  align-self: start !important;
+  margin-top: 5%;
+
+  .mdc-dialog__surface {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+}

@@ -1,0 +1,185 @@
+<div class="mat-header">
+  <div>
+    <p
+      style="font-size: 24px; font-weight: 600; margin-bottom: 0"
+      class="flex-item-left">
+      Export Results
+    </p>
+  </div>
+</div>
+<mat-divider> </mat-divider>
+<mat-dialog-content>
+  <mat-tab-group
+    (selectedTabChange)="onTabChange($event)"
+    mat-stretch-tabs="false"
+    mat-align-tabs="start"
+    [(selectedIndex)]="tabIdx">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="label">Ready to download</div>
+      </ng-template>
+      <div class="table-wrapper">
+        <table mat-table class="stripped" [dataSource]="successDataSource">
+          <ng-container matColumnDef="parameterName">
+            <th mat-header-cell *matHeaderCellDef>Parameter File Name</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.parameterName }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="version">
+            <th mat-header-cell *matHeaderCellDef>Parameter File Version</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.version }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Export Status</th>
+            <td mat-cell *matCellDef="let element">
+              <span
+                [ngClass]="{
+                  'status-green': element.status === 'Completed',
+                  'status-red': element.status === 'Failed',
+                  'status-orange': element.status === 'Exporting'
+                }">
+                {{ element.status }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.description }}
+            </td>
+          </ng-container>
+
+          <tr
+            style="background-color: #4a5964; font-weight: 600; color: white"
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+          <tr
+            style="height: 40px"
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            class="data-row"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td
+              class="mat-cell no-data"
+              [attr.colspan]="displayedColumns.length">
+              No Records Found
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="label">Failed ({{ failedDataSource.length }})</div>
+      </ng-template>
+      <div class="table-wrapper">
+        <table mat-table class="stripped" [dataSource]="failedDataSource">
+          <ng-container matColumnDef="parameterName">
+            <th mat-header-cell *matHeaderCellDef>Parameter File Name</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.parameterName }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="version">
+            <th mat-header-cell *matHeaderCellDef>Parameter File Version</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.version }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Export Status</th>
+            <td mat-cell *matCellDef="let element">
+              <span
+                [ngClass]="{
+                  'status-green': element.status === 'Completed',
+                  'status-red': element.status === 'Failed',
+                  'status-orange': element.status === 'Exporting'
+                }">
+                {{ element.status }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.description }}
+            </td>
+          </ng-container>
+
+          <tr
+            style="background-color: #4a5964; font-weight: 600; color: white"
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+          <tr
+            style="height: 40px"
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            class="data-row"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td
+              class="mat-cell no-data"
+              [attr.colspan]="displayedColumns.length">
+              No Records Found
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>
+
+<mat-divider> </mat-divider>
+<mat-dialog-actions>
+  <div class="mat-footer">
+    <div>
+      <p>
+        Total:
+        {{ tabIdx === 0 ? successDataSource.length : failedDataSource.length }}
+        <strong>Record(s)</strong>
+      </p>
+    </div>
+    <div>
+      <div class="btn-container">
+        <div>
+          <button
+            class="h-40"
+            mat-stroked-button
+            (click)="handleCancelDownload()">
+            Cancel
+          </button>
+        </div>
+        <!-- <div *ngIf="!data || data.action !== 'delete'">
+          <button class="h-40" mat-stroked-button mat-dialog-close>
+            Save as draft
+          </button>
+        </div> -->
+        @if (tabIdx === 0) {
+          <div>
+            <button
+              type="button"
+              class="btn local-primary"
+              mat-button
+              cdkFocusInitial
+              (click)="onSubmit()">
+              Download
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</mat-dialog-actions>

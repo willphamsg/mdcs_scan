@@ -1,0 +1,195 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [showHome]="false"
+    [menuItem]="'Message Data Management'"
+    [headerTitle]="'Message File Import'"></app-breadcrumbs>
+</div>
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">Message File Import</h1>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="entry-actions extra-format">
+      <!-- <div style="display: flex; flex-direction: column">
+        <label style="font-weight: 700">Depot Name</label>
+        <mat-form-field style="width: 420px">
+          <mat-select
+            placeholder="Select Depot"
+            (selectionChange)="handleSelectDepot($event)">
+            @for (depot of depots; track $index) {
+              <mat-option [value]="depot.depot_id">
+                {{ depot.depot_name }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div> -->
+
+      <div style="display: flex; flex-direction: column">
+        <label style="font-weight: 700">Date</label>
+        <mat-form-field style="width: 420px">
+          <input
+            matInput
+            [matDatepicker]="picker"
+            placeholder="Select Date"
+            (dateChange)="handleChangeDate($event)" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker">
+            <mat-icon matDatepickerToggleIcon>
+              <img src="/assets/icons/calendar.svg" /> </mat-icon
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="import-wrapper">
+        <button
+          type="button"
+          mat-flat-button
+          (click)="openView()"
+          class="import-button"
+          disabled="{{ !dateSelected }}">
+          <mat-icon>
+            <img src="/assets/icons/import.svg" alt="image"
+          /></mat-icon>
+          Import
+        </button>
+
+        @if (!!dateSelected) {
+          <input
+            #fileInput
+            type="file"
+            multiple
+            id="fileUpload"
+            class="input-file"
+            accept=".zip,.rar,.7zip"
+            (change)="importHandler($event)" />
+        }
+      </div>
+
+      <!-- <app-filter [filterConfigs]="filterConfigs"></app-filter> -->
+    </div>
+    <!-- Selected Filter Component -->
+    <!-- <app-selected-filter /> -->
+
+    <div class="table-wrapper">
+      <table mat-table class="stripped" [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
+          <td mat-cell *matCellDef="let element; let dataIndex = index">
+            {{ dataIndex + 1 }}
+          </td>
+        </ng-container>
+        <!-- 
+        <ng-container matColumnDef="depot">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Depots</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.depot }}
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="messageDataFileName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Message File Name <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.messageDataFileName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="busNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Bus No <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.busNo }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="sequenceNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Message Date File Sequence No <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.sequenceNo }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="creationDateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Creation Date Time <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.creationDateTime | date: 'dd/MM/yyyy HH:mm' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="messageData">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            No. of Messages <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.messageData }}
+          </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="effectiveDateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="text-align">
+              Effective Date Time <span class="custom-sort"> </span>
+            </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.effectiveDateTime | date: 'dd/MM/yyyy HH:mm' }}
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Status <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span
+              [ngClass]="{
+                'status-green': element.status === 'Success',
+                'status-red': element.status === 'Failed',
+                'status-orange': element.status === 'Importing'
+              }">
+              {{ element.status }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Description <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.description }}
+          </td>
+        </ng-container>
+
+        <tr
+          style="background-color: #4a5964; font-weight: 600; color: white"
+          mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+        <tr
+          style="height: 40px"
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="data-row"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            No Records Found
+          </td>
+        </tr>
+      </table>
+    </div>
+    <app-pagination
+      [totalItems]="rowCount"
+      [currentPageInput]="currentPage"
+      (pageChange)="onPageChange($event)"></app-pagination>
+  </mat-card-content>
+</mat-card>

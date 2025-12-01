@@ -1,0 +1,419 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [menuItem]="'Parameter Management'"
+    [headerTitle]="'Parameter Viewer'"></app-breadcrumbs>
+</div>
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">Parameter Viewer</h1>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <mat-tab-group
+      (selectedTabChange)="onTabChange($event)"
+      mat-stretch-tabs="false"
+      mat-align-tabs="start"
+      [(selectedIndex)]="tabIdx">
+      @for (item of tabList; track item.id) {
+        <mat-tab [label]="item.label">
+          <ng-template mat-tab-label>
+            <div>{{ item?.label }}</div>
+          </ng-template>
+        </mat-tab>
+      }
+    </mat-tab-group>
+
+    <mat-sidenav-container class="sidenav-container">
+      <mat-sidenav mode="side" opened>
+        <div style="padding: 10px">
+          <mat-card-header class="sidenav-header">
+            <span class="sidenav-title-with-icon">{{ sideNavHeader }}</span>
+          </mat-card-header>
+          <mat-nav-list>
+            <mat-accordion multi class="filter-accordion-wrapper">
+              @for (device of parameterDeviceItems$ | async; track $index) {
+                <mat-expansion-panel hideToggle class="device-items">
+                  <mat-expansion-panel-header appClickStopPropagation>
+                    <mat-panel-title
+                      class="header-with-icon"
+                      [ngClass]="{
+                        'single-item': !device.device_items.length
+                      }">
+                      {{ device.device_label }}
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div>
+                    @for (dataItem of device.device_items; track $index) {
+                      <div
+                        [ngClass]="{
+                          'selected-item': selectedItem === dataItem.item_code
+                        }"
+                        style="width: inherit">
+                        <a
+                          href="javascript:void(0);"
+                          (click)="onSelectItem(device, dataItem.item_code)">
+                          <span class="item">{{ dataItem.label }}</span>
+                        </a>
+                      </div>
+                    }
+                  </div>
+                </mat-expansion-panel>
+              }
+            </mat-accordion>
+          </mat-nav-list>
+        </div>
+      </mat-sidenav>
+
+      <!-- Main Content -->
+      <mat-sidenav-content>
+        <!-- @if (!selectedItem) {
+          <app-main-layout></app-main-layout>
+        } @else {
+          @switch (selectedItem) {
+            @case ('MDCS_ADPDT') {
+              <div [formGroup]="deviceConfigFormGroup" class="select-container">
+                <div class="depot-container">
+                  <label class="dropdown-label">
+                    <p
+                      style="
+                        font-size: 14px;
+                        font-weight: 700;
+                        margin-bottom: unset !important;
+                      ">
+                      Depot Name
+                    </p>
+                  </label>
+                  <mat-form-field appearance="outline">
+                    <mat-select
+                      formControlName="depot"
+                      placeholder="Select Depot">
+                      @for (depot of depots$ | async; track $index) {
+                        <mat-option [value]="depot.depot_code">
+                          {{ depot.depot_name }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              @if (deviceConfigFormGroup.get('depot')?.value) {
+                <app-main-layout></app-main-layout>
+              } @else {
+                <app-user-table></app-user-table>
+              }
+            }
+            @case ('DAGW_BFT') {
+              <div [formGroup]="deviceConfigFormGroup" class="select-container">
+                <div class="depot-container">
+                  <label class="dropdown-label">
+                    <p
+                      style="
+                        font-size: 14px;
+                        font-weight: 700;
+                        margin-bottom: unset !important;
+                      ">
+                      Depot Name
+                    </p>
+                  </label>
+                  <mat-form-field appearance="outline">
+                    <mat-select
+                      formControlName="depot"
+                      placeholder="Select Depot">
+                      @for (depot of depots$ | async; track $index) {
+                        <mat-option [value]="depot.depot_code">
+                          {{ depot.depot_name }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              @if (deviceConfigFormGroup.get('depot')?.value) {
+                <app-main-layout></app-main-layout>
+              } @else {
+                <app-user-table></app-user-table>
+              }
+            }
+            @case ('DAGW_BFCID') {
+              <div [formGroup]="deviceConfigFormGroup">
+                <div class="radio-container">
+                  @for (parameter of parameterList$ | async; track $index) {
+                    <label class="custom-radio">
+                      <input
+                        formControlName="parameterName"
+                        type="radio"
+                        [value]="parameter.value" />
+                      <span class="radio-label">{{ parameter.value }}</span>
+                    </label>
+                  }
+                </div>
+
+                <div class="select-container">
+                  <div class="depot-container">
+                    <mat-form-field appearance="outline">
+                      <mat-select
+                        formControlName="depot"
+                        placeholder="Select Depot">
+                        @for (depot of depots$ | async; track $index) {
+                          <mat-option [value]="depot.depot_code">
+                            {{ depot.depot_name }}
+                          </mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="bus-container">
+                    <mat-form-field appearance="outline">
+                      <mat-select
+                        formControlName="busType"
+                        placeholder="Select Bus Type">
+                        @for (bus of busList$ | async; track $index) {
+                          <mat-option [value]="bus.service_num">
+                            {{ bus.service_num }}
+                          </mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            }
+            @case ('bus_cash_fare') {
+              <div [formGroup]="deviceConfigFormGroup">
+                <div class="radio-container">
+                  @for (parameter of parameterList$ | async; track $index) {
+                    <label class="custom-radio">
+                      <input
+                        formControlName="parameterName"
+                        type="radio"
+                        [value]="parameter.value" />
+                      <span class="radio-label">{{ parameter.value }}</span>
+                    </label>
+                  }
+                </div>
+
+                <div class="select-container">
+                  <div class="depot-container">
+                    <mat-form-field appearance="outline">
+                      <mat-select
+                        formControlName="depot"
+                        placeholder="Select Depot">
+                        @for (depot of depots$ | async; track $index) {
+                          <mat-option [value]="depot.depot_code">
+                            {{ depot.depot_name }}
+                          </mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            }
+          }
+        } -->
+
+        @switch (selectedItem) {
+          <!-- @case ('MDCS_ADPDT') {
+            <div [formGroup]="deviceConfigFormGroup" class="select-container">
+              <div class="depot-container">
+                <label class="dropdown-label">
+                  <p
+                    style="
+                      font-size: 14px;
+                      font-weight: 700;
+                      margin-bottom: unset !important;
+                    ">
+                    Depot Name
+                  </p>
+                </label>
+                <mat-form-field appearance="outline">
+                  <mat-select
+                    formControlName="depot"
+                    placeholder="Select Depot">
+                    @for (depot of depots$ | async; track $index) {
+                      <mat-option [value]="depot.depot_code">
+                        {{ depot.depot_name }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          } -->
+          <!-- @case ('DAGW_BFT') {
+            <div [formGroup]="deviceConfigFormGroup" class="select-container">
+              <div class="depot-container">
+                <label class="dropdown-label">
+                  <p
+                    style="
+                      font-size: 14px;
+                      font-weight: 700;
+                      margin-bottom: unset !important;
+                    ">
+                    Depot Name
+                  </p>
+                </label>
+                <mat-form-field appearance="outline">
+                  <mat-select
+                    formControlName="depot"
+                    placeholder="Select Depot">
+                    @for (depot of depots$ | async; track $index) {
+                      <mat-option [value]="depot.depot_code">
+                        {{ depot.depot_name }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          } -->
+          <!-- @case ('DAGW_UA') {
+            <div [formGroup]="deviceConfigFormGroup" class="select-container">
+              <div class="depot-container">
+                <mat-form-field appearance="outline">
+                  <mat-select
+                    formControlName="depot"
+                    placeholder="Select Depot">
+                    @for (depot of depots$ | async; track $index) {
+                      <mat-option [value]="depot.depot_code">
+                        {{ depot.depot_name }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          } -->
+          @case ('DAGW_BFCID') {
+            <div [formGroup]="deviceConfigFormGroup">
+              <div class="radio-container">
+                @for (parameter of parameterList$ | async; track $index) {
+                  <label class="custom-radio">
+                    <input
+                      formControlName="parameterName"
+                      type="radio"
+                      [value]="parameter.value" />
+                    <span class="radio-label">{{ parameter.value }}</span>
+                  </label>
+                }
+              </div>
+
+              <div class="select-container">
+                <div class="depot-container">
+                  <mat-form-field appearance="outline">
+                    <mat-select
+                      formControlName="depot"
+                      placeholder="Select Depot">
+                      @for (depot of depots$ | async; track $index) {
+                        <mat-option [value]="depot.depot_code">
+                          {{ depot.depot_name }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="bus-container">
+                  <mat-form-field appearance="outline">
+                    <mat-select
+                      formControlName="busType"
+                      placeholder="Select Bus Type">
+                      @for (bus of busList$ | async; track $index) {
+                        <mat-option [value]="bus.service_num">
+                          {{ bus.service_num }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          }
+          @case ('item_07') {
+            <div [formGroup]="deviceConfigFormGroup">
+              <div class="radio-container">
+                @for (parameter of parameterList$ | async; track $index) {
+                  <label class="custom-radio">
+                    <input
+                      formControlName="parameterName"
+                      type="radio"
+                      [value]="parameter.value" />
+                    <span class="radio-label">{{ parameter.value }}</span>
+                  </label>
+                }
+              </div>
+
+              <!-- <div class="select-container">
+                <div class="depot-container">
+                  <mat-form-field appearance="outline">
+                    <mat-select
+                      formControlName="depot"
+                      placeholder="Select Depot">
+                      @for (depot of depots$ | async; track $index) {
+                        <mat-option [value]="depot.depot_code">
+                          {{ depot.depot_name }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div> -->
+            </div>
+          }
+          @case ('item_11') {
+            <div [formGroup]="deviceConfigFormGroup">
+              <div class="radio-container">
+                @for (parameter of parameterList$ | async; track $index) {
+                  <label class="custom-radio">
+                    <input
+                      formControlName="parameterName"
+                      type="radio"
+                      [value]="parameter.value" />
+                    <span class="radio-label">{{ parameter.value }}</span>
+                  </label>
+                }
+              </div>
+
+              <!-- <div class="select-container">
+                <div class="depot-container">
+                  <mat-form-field appearance="outline">
+                    <mat-select
+                      formControlName="depot"
+                      placeholder="Select Depot">
+                      @for (depot of depots$ | async; track $index) {
+                        <mat-option [value]="depot.depot_code">
+                          {{ depot.depot_name }}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div> -->
+            </div>
+          }
+        }
+
+        <app-main-layout></app-main-layout>
+
+        <!-- 
+        @if (deviceConfigFormGroup.valid) {
+          @switch (selectedDevice) {
+            @case ('system_parameters') {
+              <app-system-parameters
+                [dataSource]="dataSourceDetails"
+                [type]="selectedItem"></app-system-parameters>
+            }
+            @case ('device_config') {
+              <app-device-configuration
+                [bfcConfig]="dataSourceDetails"></app-device-configuration>
+            }
+            @case ('application_parameters') {
+              <app-system-parameters></app-system-parameters>
+            }
+          }
+        } -->
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </mat-card-content>
+</mat-card>

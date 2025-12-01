@@ -1,0 +1,69 @@
+.label {
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.import-wrapper {
+  position: relative;
+
+  &:hover {
+    .import-button {
+      opacity: 0.8;
+    }
+  }
+
+  .import-button {
+    height: 40px;
+    background-color: #0046ad;
+    color: white !important;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  .input-file {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+}
+
+.approve {
+  background-color: #009e73 !important;
+}
+
+.edit {
+  background-color: #332288 !important;
+}
+
+.import {
+  background-color: #009e73 !important;
+}
+
+.reject {
+  background-color: #9f0f0f !important;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 16px;
+  color: white;
+
+  &.Approved,
+  &.approved {
+    background-color: #009e73;
+  }
+
+  &.Rejected,
+  &.rejected {
+    background-color: #9f0f0f;
+  }
+
+  &.Pending,
+  &.pending {
+    background-color: #0046ad;
+  }
+}

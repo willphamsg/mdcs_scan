@@ -1,0 +1,177 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [showHome]="false"
+    [menuItem]="'Message Data Management'"
+    [headerTitle]="'Message File Export'"></app-breadcrumbs>
+</div>
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">Message File Export</h1>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <div class="entry-actions extra-format">
+      <div style="display: flex; flex-direction: column">
+        <label style="font-weight: 700">Date</label>
+        <mat-form-field style="width: 420px">
+          <input
+            matInput
+            [matDatepicker]="picker"
+            placeholder="Select Date"
+            (dateChange)="handleChangeDate($event)" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker">
+            <mat-icon matDatepickerToggleIcon>
+              <img src="/assets/icons/calendar.svg" /> </mat-icon
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!-- <app-filter [filterConfigs]="filterConfigs"></app-filter> -->
+      <!-- <div class="button-filter"></div> -->
+      <div class="item">
+        <button
+          type="button"
+          [disabled]="!dateSelected"
+          class="btn-download"
+          (click)="exportHandler()">
+          <img src="/assets/icons/export.svg" class="download-icon" alt="" />
+          Export
+        </button>
+      </div>
+    </div>
+    <!-- Selected Filter Component -->
+    <app-selected-filter />
+
+    <div class="table-wrapper">
+      <table
+        mat-table
+        class="stripped"
+        [dataSource]="dataSource"
+        matSort
+        (matSortChange)="sortHandler($event)">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
+          <td mat-cell *matCellDef="let element; let dataIndex = index">
+            {{ dataIndex + 1 }}
+          </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="depot">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Depots</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.depot }}
+          </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="messageFileName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Message Data File Name <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.messageFileName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="depotId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Depot ID <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.depotId }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="sequenceNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Message Data File Sequence No <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.sequenceNo }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="modifiedDateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Modified Data Time <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.modifiedDateTime | date: 'dd/MM/yyyy HH:mm' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Export Status <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span
+              [ngClass]="{
+                'status-green':
+                  element.status === 'Exported' ||
+                  element.status === 'Completed',
+                'status-red': element.status === 'Failed',
+                'status-orange': element.status === 'Exporting'
+              }">
+              {{ element.status }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Description <span class="custom-sort"> </span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.description }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="chk">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox
+              onkeypress=""
+              [(ngModel)]="chkAll"
+              (change)="checkAllHandler($event)"
+              color="primary"></mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-checkbox
+              [checked]="element.chk"
+              (change)="checkHandler($event, element)"
+              onkeypress=""
+              color="primary"
+              [disabled]="element.status === 'Exporting'"></mat-checkbox>
+          </td>
+        </ng-container>
+
+        <tr
+          style="background-color: #4a5964; font-weight: 600; color: white"
+          mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+        <tr
+          style="height: 40px"
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="data-row"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            No Records Found
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- <app-pagination></app-pagination> -->
+
+    <div class="table-footer">
+      <app-pagination
+        [totalItems]="rowCount"
+        [currentPageInput]="currentPage"
+        (pageChange)="onPageChange($event)"></app-pagination>
+      <!-- <div class="selected-item">Selected: {{ selection.length }}</div> -->
+    </div>
+  </mat-card-content>
+</mat-card>

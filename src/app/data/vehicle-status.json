@@ -1,0 +1,22 @@
+[
+  {
+    "id": 4,
+    "value": "Future"
+  },
+  {
+    "id": 0,
+    "value": "Inactive"
+  },
+  {
+    "id": 5,
+    "value": "Active"
+  },
+  {
+    "id": 3,
+    "value": "Obsolete"
+  },
+  {
+    "id": 6,
+    "value": "Active/Obsolete"
+  }
+]

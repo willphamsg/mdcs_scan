@@ -1,0 +1,219 @@
+<div class="breadcrumbs">
+  <app-breadcrumbs
+    [menuItem]="'Maintenance'"
+    headerTitle="System Info"></app-breadcrumbs>
+</div>
+<mat-card>
+  <mat-card-header>
+    <h1 class="page-title">System Info</h1>
+  </mat-card-header>
+  <mat-divider> </mat-divider>
+  <mat-card-content>
+    <div class="content-container">
+      <form [formGroup]="depotForm">
+        <div
+          class="entry-actions"
+          style="margin-bottom: 20px; display: flex; align-items: center">
+          <div style="display: flex; flex-direction: column">
+            <label style="font-weight: 700">Depot Name</label>
+            <mat-form-field style="width: 320px">
+              <mat-select formControlName="depot" placeholder="Select Depot">
+                @for (depot of depots; track $index) {
+                  <mat-option [value]="depot.depot_id">
+                    {{ depot.depot_name }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+
+      @if (!depot_id) {
+        <div class="empty-depot-display">
+          <img src="/assets/icons/camera.svg" alt="empty files" />
+          <p>Select a depot to show results.</p>
+          <p>No data to display.</p>
+        </div>
+      } @else {
+        <div class="information-grid ps-sticky">
+          <mat-card class="info-section">
+            <mat-card-header style="padding-top: 0">
+              <mat-card-title>MDCS Information</mat-card-title>
+              <!-- Update Last Update when logic is finalized -->
+              <mat-card-subtitle
+                >Last updated 10/11/2025 14:00:36</mat-card-subtitle
+              >
+            </mat-card-header>
+
+            <mat-accordion multi>
+              <div class="info-row-mdcs">
+                <div class="info-label">System Information Name</div>
+                <div class="info-value">MDCS</div>
+              </div>
+            </mat-accordion>
+          </mat-card>
+
+          <mat-card class="info-section">
+            <mat-card-header style="padding-top: 0">
+              <mat-card-title>DAGW Information</mat-card-title>
+              <mat-card-subtitle
+                >Last updated 10/11/2025 14:00:36</mat-card-subtitle
+              >
+            </mat-card-header>
+
+            <mat-accordion multi>
+              <div class="info-row-dagw">
+                <div class="info-label">System Information Name</div>
+                <div class="info-value">DAGW</div>
+              </div>
+            </mat-accordion>
+          </mat-card>
+        </div>
+        <div class="system-detail">
+          <div class="information-grid">
+            <mat-card class="info-section">
+              <mat-accordion multi>
+                @for (info of dataSource.mdcs; track $index) {
+                  <div class="panel-wrapper">
+                    <mat-expansion-panel togglePosition="before" expanded>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>{{ info.label }}</mat-panel-title>
+                      </mat-expansion-panel-header>
+
+                      @for (detail of info.details; track $index) {
+                        <div
+                          class="items"
+                          [ngClass]="{
+                            'sub-title': detail.subDetails?.length
+                          }">
+                          <div class="items__label">
+                            {{ detail.label }}
+                          </div>
+                          <div [ngClass]="detail?.value?.id">
+                            {{ detail.value?.label }}
+                          </div>
+                        </div>
+
+                        @if (detail.subDetails?.length) {
+                          @for (subDetail of detail.subDetails; track $index) {
+                            <div class="items items--sub">
+                              <div class="items__label">
+                                {{ subDetail.label }}
+                              </div>
+                              <div [ngClass]="subDetail?.value?.id">
+                                {{ subDetail.value?.label }}
+                              </div>
+                            </div>
+                          }
+                        }
+                      }
+                    </mat-expansion-panel>
+
+                    @if (info.children?.length) {
+                      @for (subInfo of info.children; track $index) {
+                        <mat-expansion-panel togglePosition="before" expanded>
+                          <mat-expansion-panel-header>
+                            <mat-panel-title>{{
+                              subInfo.label
+                            }}</mat-panel-title>
+                            <div
+                              class="title-status"
+                              [ngClass]="subInfo?.value?.id">
+                              {{ subInfo?.value?.label }}
+                            </div>
+                          </mat-expansion-panel-header>
+
+                          @for (subDetails of subInfo.details; track $index) {
+                            <div class="items">
+                              <div class="items__label">
+                                {{ subDetails.label }}
+                              </div>
+                              <div [ngClass]="subDetails?.value?.id">
+                                {{ subDetails.value?.label }}
+                              </div>
+                            </div>
+                          }
+                        </mat-expansion-panel>
+                      }
+                    }
+                  </div>
+                }
+              </mat-accordion>
+            </mat-card>
+
+            <mat-card class="info-section">
+              <mat-accordion multi>
+                @for (info of dataSource.dagw; track $index) {
+                  <div class="panel-wrapper">
+                    <mat-expansion-panel togglePosition="before" expanded>
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>{{ info.label }}</mat-panel-title>
+                      </mat-expansion-panel-header>
+
+                      @for (detail of info.details; track $index) {
+                        <div
+                          class="items"
+                          [ngClass]="{
+                            'sub-title': detail.subDetails?.length
+                          }">
+                          <div class="items__label">
+                            {{ detail.label }}
+                          </div>
+                          <div [ngClass]="detail?.value?.id">
+                            {{ detail.value?.label }}
+                          </div>
+                        </div>
+
+                        @if (detail.subDetails?.length) {
+                          @for (subDetail of detail.subDetails; track $index) {
+                            <div class="items items--sub">
+                              <div class="items__label">
+                                {{ subDetail.label }}
+                              </div>
+                              <div [ngClass]="subDetail?.value?.id">
+                                {{ subDetail.value?.label }}
+                              </div>
+                            </div>
+                          }
+                        }
+                      }
+                    </mat-expansion-panel>
+
+                    @if (info.children?.length) {
+                      @for (subInfo of info.children; track $index) {
+                        <mat-expansion-panel togglePosition="before" expanded>
+                          <mat-expansion-panel-header>
+                            <mat-panel-title
+                              >{{ subInfo.label }}
+                              <div
+                                class="title-status"
+                                [ngClass]="subInfo?.value?.id">
+                                {{ subInfo?.value?.label }}
+                              </div>
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>
+
+                          @for (subDetails of subInfo.details; track $index) {
+                            <div class="items">
+                              <div class="items__label">
+                                {{ subDetails.label }}
+                              </div>
+                              <div [ngClass]="subDetails?.value?.id">
+                                {{ subDetails.value?.label }}
+                              </div>
+                            </div>
+                          }
+                        </mat-expansion-panel>
+                      }
+                    }
+                  </div>
+                }
+              </mat-accordion>
+            </mat-card>
+          </div>
+        </div>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>
